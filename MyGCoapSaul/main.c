@@ -22,6 +22,8 @@
 
 #include "shell.h"
 #include "gcoap_example.h"
+#include "msg.h"
+#include "net/gcoap.h"
 
 int main(void)
 {
