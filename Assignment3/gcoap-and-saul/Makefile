@@ -1,7 +1,7 @@
 # Default Makefile, for host native GNRC-based networking
 
 # name of your application
-APPLICATION = gcoap_example
+APPLICATION = gcoap_and_sault
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= native
@@ -28,6 +28,8 @@ else
 endif
 
 USEMODULE += gcoap
+
+USEMODULE += saul
 
 # Required by gcoap example
 USEMODULE += od
