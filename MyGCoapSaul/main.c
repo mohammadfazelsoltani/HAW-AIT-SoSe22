@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 #include "shell.h"
-#include "gcoap_example.h"
+#include "./../RIOT-HAW-AIT-SoSe22/examples/gcoap/gcoap_example.h"
 #include "msg.h"
 #include "net/gcoap.h"
 
