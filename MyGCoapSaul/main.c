@@ -29,4 +29,9 @@ int main(void)
 {
     puts("Welcome to MyGCoapASaul Example!\n");
     puts("Type `help` for help\n");
+
+    /* start shell */
+    puts("All up, running the shell now");
+    char line_buf[SHELL_DEFAULT_BUFSIZE];
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 }
