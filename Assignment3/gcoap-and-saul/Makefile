@@ -29,7 +29,7 @@ endif
 
 USEMODULE += gcoap
 
-USEMODULE += saul
+USEMODULE += saul_default
 
 # Required by gcoap example
 USEMODULE += od
