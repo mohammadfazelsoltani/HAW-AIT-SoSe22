@@ -15,6 +15,8 @@
  *
  * @author      Ken Bannister <kb2ma@runbox.com>
  * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
+ * @author      Mohammad Fazel Soltani <mohammadfazel.soltani@haw-hamburg.de>
+ * @author      Frank Matthiesen <frank.matthiesen@haw-hamburg.de>
  *
  * @}
  */
@@ -30,6 +32,9 @@
 #include "od.h"
 
 #include "gcoap_example.h"
+
+#include "saul_reg.h"
+#include "phydat.h"
 
 #define ENABLE_DEBUG 0
 #include "debug.h"
@@ -59,11 +64,17 @@ static const credman_credential_t credential = {
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _saul_led_green_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _saul_led_red_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
 static const coap_resource_t _resources[] = {
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
+    { "/saul/blueLed", COAP_GET | COAP_PUT, _saul_led_blue_handler, NULL },
+    { "/saul/greenLed", COAP_GET | COAP_PUT, _saul_led_green_handler, NULL },
+    { "/saul/redLed", COAP_GET | COAP_PUT, _saul_led_red_handler, NULL },
     { "/riot/board", COAP_GET, _riot_board_handler, NULL },
 };
 
@@ -139,6 +150,79 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
             }
     }
 
+    return 0;
+}
+
+static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
+{
+    saul_reg_t *dev = NULL;
+    int resu = 0;
+    phydat_t res;
+    (void)ctx;
+     /* read coap method type in packet */
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+    switch (method_flag) {
+        case COAP_GET:
+            gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+            coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+            size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+
+            dev = saul_reg_find_nth(2);// 2 is the id for blue led
+            resu = saul_reg_read(dev,res);
+            if (resu <= 0)
+            {
+                printf("error: failed to read from device #%i\n", num);
+                return;
+            }
+
+            /* write the response buffer with the request count value */
+            resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
+            return resp_len;
+
+        case COAP_PUT:
+            /* convert the payload to an integer and update the internal
+               value */
+            if (pdu->payload_len <= 5) {
+                char payload[6] = { 0 };
+                memcpy(payload, (char *)pdu->payload, pdu->payload_len);
+                req_count = (uint16_t)strtoul(payload, NULL, 10);
+                return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
+            }
+            else {
+                return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
+            }
+    }
+    // TODO
+    return 0;
+}
+
+static ssize_t _saul_led_green_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
+{
+    (void)ctx;
+     /* read coap method type in packet */
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+    switch (method_flag) {
+        case COAP_GET:
+        // TODO
+        case COAP_PUT:
+        // TODO
+    }
+    // TODO
+    return 0;
+}
+
+static ssize_t _saul_led_red_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
+{
+    (void)ctx;
+     /* read coap method type in packet */
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+    switch (method_flag) {
+        case COAP_GET:
+        // TODO
+        case COAP_PUT:
+        // TODO
+    }
+    // TODO
     return 0;
 }
 
