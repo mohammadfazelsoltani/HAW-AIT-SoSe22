@@ -175,9 +175,9 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
                 return;
             }
             // phydat_dump(&res, resu);
-            phydat_to_json(&res, resu, NULL)
             /* write the response buffer with the request count value */
-            resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
+            //resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
+            resp_len += phydat_to_json(&res, resu, NULL);
             return resp_len;
 
         case COAP_PUT:
