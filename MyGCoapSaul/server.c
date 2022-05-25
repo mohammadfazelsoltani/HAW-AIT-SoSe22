@@ -168,7 +168,7 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
             dev = saul_reg_find_nth(2);// 2 is the id for blue led
-            resu = saul_reg_read(dev,res);
+            resu = saul_reg_read(dev, &res);
             if (resu <= 0)
             {
                 printf("error: failed to read from device #%i\n", num);
