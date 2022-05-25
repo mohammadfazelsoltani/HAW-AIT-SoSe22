@@ -166,9 +166,8 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
             coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-            int num = 2;
 
-            dev = saul_reg_find_nth(num);// 2 is the id for blue led
+            dev = saul_reg_find_nth(2);// 2 is the id for blue led
             resu = saul_reg_read(dev, &res);
             if (resu <= 0)
             {
