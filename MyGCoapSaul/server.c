@@ -64,34 +64,28 @@ static const credman_credential_t credential = {
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
 static const coap_resource_t _resources[] = {
+    { "/button/cs0", COAP_GET , _button_handler_cs0, NULL },
+    { "/button/sw0", COAP_GET , _button_handler_sw0, NULL },
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
-    { "/leds/blue", COAP_GET | COAP_PUT, _led_handlerb, NULL },
-    { "/leds/green", COAP_GET | COAP_PUT, _led_handlerg, NULL },
-    { "/leds/red", COAP_GET | COAP_PUT, _led_handlerr, NULL },
-    { "/riot/board", COAP_GET, _riot_board_handler, NULL }
+    { "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
+    { "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
+    { "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
+    { "/riot/board", COAP_GET, _riot_board_handler, NULL },
+    { "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
+    { "/sensor/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
-
-static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 0);
-}
-
-static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 1);
-}
-
-static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 2);
-}
-
-
 
 static const char *_link_params[] = {
     ";ct=0;rt=\"count\";obs",
@@ -169,6 +163,34 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
     return 0;
 }
 
+static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 0);
+}
+
+static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 1);
+}
+
+static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 2);
+}
+
+static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 3);
+}
+
+static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 4);
+}
+
+static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 8);
+}
+
+static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 5);
+}
+
 
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
 {
@@ -189,14 +211,13 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
             //num = atoi(argv[2]);
-            dev = saul_reg_find_nth(dev_num);// 2 is the id for blue led
+            dev = saul_reg_find_nth(dev_num);
             if (dev == NULL){
                 puts("error: undefined device given");
                 return -1;
                 }
             dim = saul_reg_read(dev, &res);
             /* write the response buffer with the request count value */
-            //resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
             resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
             return resp_len;
 
@@ -219,7 +240,6 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
 
                 dim = saul_reg_write(dev, &data);
 
-
                 req_count = (uint16_t)strtoul(payload, NULL, 10);
                 return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
             }
@@ -227,7 +247,6 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
                 return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
             }
     }
-    // TODO
     return 0;
 }
 
