@@ -65,8 +65,8 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _saul_led_green_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _saul_led_red_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+//static ssize_t _saul_led_green_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+//static ssize_t _saul_led_red_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
@@ -155,21 +155,26 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 
 static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
+    //int num = 0;
     saul_reg_t *dev = NULL;
-    int resu = 0;
-    phydat_t res;
+    int dim = 0;
+    phydat_t res = NULL;
+
     (void)ctx;
-     /* read coap method type in packet */
+    
+    /* read coap method type in packet */
     unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+    
     switch (method_flag) {
         case COAP_GET:
             gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
             coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
+            //num = atoi(argv[2]);
             dev = saul_reg_find_nth(2);// 2 is the id for blue led
-            resu = saul_reg_read(dev, &res);
-            if (resu <= 0)
+            dim = saul_reg_read(dev, &res);
+            if (dim <= 0)
             {
                 printf("error: failed to read from device #%i\n", num);
                 return;
@@ -177,7 +182,7 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             // phydat_dump(&res, resu);
             /* write the response buffer with the request count value */
             //resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
-            resp_len += phydat_to_json(&res, resu, (char *)pdu->payload);
+            resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
             return resp_len;
 
         case COAP_PUT:
@@ -192,36 +197,6 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             else {
                 return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
             }
-    }
-    // TODO
-    return 0;
-}
-
-static ssize_t _saul_led_green_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
-{
-    (void)ctx;
-     /* read coap method type in packet */
-    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
-    switch (method_flag) {
-        case COAP_GET:
-        // TODO
-        case COAP_PUT:
-        // TODO
-    }
-    // TODO
-    return 0;
-}
-
-static ssize_t _saul_led_red_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
-{
-    (void)ctx;
-     /* read coap method type in packet */
-    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
-    switch (method_flag) {
-        case COAP_GET:
-        // TODO
-        case COAP_PUT:
-        // TODO
     }
     // TODO
     return 0;
