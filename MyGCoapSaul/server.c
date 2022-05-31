@@ -175,7 +175,6 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
 {
-    int num = 0;
     saul_reg_t *dev = NULL;
     int dim = 0;
     phydat_t res;
@@ -195,7 +194,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
             dev = saul_reg_find_nth(dev_num);// 2 is the id for blue led
             if (dev == NULL){
                 puts("error: undefined device given");
-                return;
+                return -1;
                 }
             dim = saul_reg_read(dev, &res);
             /* write the response buffer with the request count value */
