@@ -67,7 +67,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev);
+static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
@@ -173,7 +173,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 }
 
 
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev)
+static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
 {
     int num = 0;
     saul_reg_t *dev = NULL;
@@ -192,7 +192,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
             //num = atoi(argv[2]);
-            dev = saul_reg_find_nth(dev);// 2 is the id for blue led
+            dev = saul_reg_find_nth(dev_num);// 2 is the id for blue led
             if (dev == NULL){
                 puts("error: undefined device given");
                 return;
