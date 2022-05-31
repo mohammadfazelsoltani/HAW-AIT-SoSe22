@@ -80,15 +80,15 @@ static const coap_resource_t _resources[] = {
 };
 
 static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    _led_handler(pdu, *buf, len, ctx, 0);
+    _led_handler(pdu, buf, len, ctx, 0);
 }
 
 static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    _led_handler(pdu, *buf, len, ctx, 1);
+    _led_handler(pdu, buf, len, ctx, 1);
 }
 
 static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    _led_handler(pdu, *buf, len, ctx, 2);
+    _led_handler(pdu, buf, len, ctx, 2);
 }
 
 
