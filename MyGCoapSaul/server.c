@@ -176,7 +176,7 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             dim = saul_reg_read(dev, &res);
             if (dim <= 0)
             {
-                printf("error: failed to read from device #%i\n", num);
+                printf("error: failed to read from device #%i\n", 2);
                 return;
             }
             // phydat_dump(&res, resu);
