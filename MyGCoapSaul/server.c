@@ -158,7 +158,7 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
     //int num = 0;
     saul_reg_t *dev = NULL;
     int dim = 0;
-    phydat_t res = NULL;
+    phydat_t res;
 
     (void)ctx;
     
@@ -177,7 +177,7 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
             if (dim <= 0)
             {
                 printf("error: failed to read from device #%i\n", 2);
-                return;
+                return -1;
             }
             // phydat_dump(&res, resu);
             /* write the response buffer with the request count value */
