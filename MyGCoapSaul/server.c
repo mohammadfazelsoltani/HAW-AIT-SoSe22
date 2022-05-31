@@ -73,9 +73,9 @@ static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, vo
 /* CoAP resources. Must be sorted by path (ASCII order). */
 static const coap_resource_t _resources[] = {
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
-    { "/leds/colorr", COAP_GET | COAP_PUT, _led_handlerr, NULL },
-    { "/leds/colorg", COAP_GET | COAP_PUT, _led_handlerg, NULL },
-    { "/leds/colorb", COAP_GET | COAP_PUT, _led_handlerb, NULL },
+    { "/leds/blue", COAP_GET | COAP_PUT, _led_handlerb, NULL },
+    { "/leds/green", COAP_GET | COAP_PUT, _led_handlerg, NULL },
+    { "/leds/red", COAP_GET | COAP_PUT, _led_handlerr, NULL },
     { "/riot/board", COAP_GET, _riot_board_handler, NULL }
 };
 
