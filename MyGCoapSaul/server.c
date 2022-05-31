@@ -64,21 +64,18 @@ static const credman_credential_t credential = {
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _saul_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx,  uint8_t dev);
+static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx,  int dev);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
 static const coap_resource_t _resources[] = {
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
-    { "/saul", COAP_GET | COAP_PUT, _saul_handler, NULL },
     { "/leds/colorr", COAP_GET | COAP_PUT, _led_handlerr, NULL },
     { "/leds/colorg", COAP_GET | COAP_PUT, _led_handlerg, NULL },
     { "/leds/colorb", COAP_GET | COAP_PUT, _led_handlerb, NULL },
-    
     { "/riot/board", COAP_GET, _riot_board_handler, NULL }
 };
 
@@ -173,7 +170,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 }
 
 
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, uint8_t dev)
+static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev)
 {
     int num = 0;
     saul_reg_t *dev = NULL;
