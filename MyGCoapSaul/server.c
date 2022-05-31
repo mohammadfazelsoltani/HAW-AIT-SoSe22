@@ -75,7 +75,7 @@ static const coap_resource_t _resources[] = {
     { "/saul/blueLed", COAP_GET | COAP_PUT, _saul_led_blue_handler, NULL },
     //{ "/saul/greenLed", COAP_GET | COAP_PUT, _saul_led_green_handler, NULL },
     //{ "/saul/redLed", COAP_GET | COAP_PUT, _saul_led_red_handler, NULL },
-    { "/riot/board", COAP_GET, _riot_board_handler, NULL },
+    { "/riot/board", COAP_GET, _riot_board_handler, NULL }
 };
 
 static const char *_link_params[] = {
@@ -179,7 +179,6 @@ static ssize_t _saul_led_blue_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len,
                 printf("error: failed to read from device #%i\n", 2);
                 return -1;
             }
-            // phydat_dump(&res, resu);
             /* write the response buffer with the request count value */
             //resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
             resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
