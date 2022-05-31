@@ -79,17 +79,17 @@ static const coap_resource_t _resources[] = {
     { "/riot/board", COAP_GET, _riot_board_handler, NULL }
 };
 
-static void _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+static ssize_t _led_handlerr(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     _led_handler(pdu, buf, len, ctx, 0);
     return 0;
 }
 
-static void _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+static ssize_t _led_handlerg(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     _led_handler(pdu, buf, len, ctx, 1);
     return 0;
 }
 
-static void _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+static ssize_t _led_handlerb(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     _led_handler(pdu, buf, len, ctx, 2);
     return 0;
 }
