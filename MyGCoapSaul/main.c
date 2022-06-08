@@ -13,7 +13,7 @@
  * @file
  * @brief       Example for demonstrating GCOAP, SAUL and the SAUL registry
  *
- * @author      Frank Matthiesen and M. Fazel Soltani
+ * @author      Frank Matthiesen and Mohammad Fazel Soltani
  *
  * @}
  */
