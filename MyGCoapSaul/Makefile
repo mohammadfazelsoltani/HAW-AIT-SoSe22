@@ -32,6 +32,8 @@ USEMODULE += netutils
 USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
+# Add Buffer Size
+CFLAGS += -DCONFIG_GCOAP_PDU_BUF_SIZE=1024
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
@@ -73,5 +75,4 @@ ifndef CONFIG_KCONFIG_MODULE_GCOAP
 # Increase from default for confirmable block2 follow-on requests
 GCOAP_RESEND_BUFS_MAX ?= 2
 CFLAGS += -DCONFIG_GCOAP_RESEND_BUFS_MAX=$(GCOAP_RESEND_BUFS_MAX)
-CFLAGS += -DCONFIG_GCOAP_PDU_BUF_SIZE=1024
 endif
