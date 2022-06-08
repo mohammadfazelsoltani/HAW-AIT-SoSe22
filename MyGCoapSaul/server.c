@@ -82,7 +82,10 @@ static const coap_resource_t _resources[] = {
     { "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
     { "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
     { "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
-    { "/riot/board", COAP_GET, _riot_board_handler, NULL },
+    { "/node/info",  COAP_GET, _handler_info, NULL },
+    { "/riot/board", COAP_GET, _riot_board_handler, NULL},
+    { "/sense/hum",  COAP_GET, _handler_dummy, NULL },
+    { "/sense/temp", COAP_GET, _handler_dummy, NULL },
     { "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sensor/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
@@ -120,6 +123,33 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
     return res;
 }
 
+
+/* define some dummy CoAP resources */
+static ssize_t _handler_dummy(coap_pkt_t *pdu,
+                              uint8_t *buf, size_t len, void *ctx)
+{
+    (void)ctx;
+
+    /* get random data */
+    int16_t val = 23;
+
+    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+    resp_len += fmt_s16_dec((char *)pdu->payload, val);
+    return resp_len;
+}
+
+static ssize_t _handler_info(coap_pkt_t *pdu,
+                             uint8_t *buf, size_t len, void *ctx)
+{
+    (void)ctx;
+
+    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+    size_t slen = sizeof(NODE_INFO);
+    memcpy(pdu->payload, NODE_INFO, slen);
+    return resp_len + slen;
+}
 
 /*
  * Server callback for /cli/stats. Accepts either a GET or a PUT.

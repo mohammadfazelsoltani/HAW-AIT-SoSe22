@@ -54,45 +54,6 @@ static void _on_ep_event(cord_ep_standalone_event_t event)
     }
 }
 
-/* define some dummy CoAP resources */
-static ssize_t _handler_dummy(coap_pkt_t *pdu,
-                              uint8_t *buf, size_t len, void *ctx)
-{
-    (void)ctx;
-
-    /* get random data */
-    int16_t val = 23;
-
-    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-    resp_len += fmt_s16_dec((char *)pdu->payload, val);
-    return resp_len;
-}
-
-static ssize_t _handler_info(coap_pkt_t *pdu,
-                             uint8_t *buf, size_t len, void *ctx)
-{
-    (void)ctx;
-
-    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-    size_t slen = sizeof(NODE_INFO);
-    memcpy(pdu->payload, NODE_INFO, slen);
-    return resp_len + slen;
-}
-
-static const coap_resource_t _resources[] = {
-    { "/node/info",  COAP_GET, _handler_info, NULL },
-    { "/sense/hum",  COAP_GET, _handler_dummy, NULL },
-    { "/sense/temp", COAP_GET, _handler_dummy, NULL }
-};
-
-static gcoap_listener_t _listener = {
-    .resources     = (coap_resource_t *)&_resources[0],
-    .resources_len = ARRAY_SIZE(_resources),
-    .next          = NULL
-};
-
 int main(void)
 {
     puts("Welcome to MyGCoapASaul Example!\n");
@@ -105,9 +66,6 @@ int main(void)
     puts("All up, running the shell now");
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
-
-    /* setup CoAP resources */
-    gcoap_register_listener(&_listener);
 
     /* register event callback with cord_ep_standalone */
     cord_ep_standalone_reg_cb(_on_ep_event);
