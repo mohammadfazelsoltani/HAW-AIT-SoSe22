@@ -66,7 +66,7 @@ int main(void)
     /* register event callback with cord_ep_standalone */
     cord_ep_standalone_reg_cb(_on_ep_event);
 
-    printf("%s\n", CONFIG_GCOAP_PDU_BUF_SIZE);
+    printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
 
     puts("Client information:");
     printf("  ep: %s\n", cord_common_get_ep());
