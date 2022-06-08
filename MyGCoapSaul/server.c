@@ -66,14 +66,14 @@ static const credman_credential_t credential = {
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+//static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+//static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+//static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
+//static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
@@ -83,9 +83,9 @@ static const coap_resource_t _resources[] = {
     //{ "/button/csZero", COAP_GET , _button_handler_cs0, NULL },
     //{ "/button/swZero", COAP_GET , _button_handler_sw0, NULL },
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
-    { "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
-    { "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
-    { "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
+    //{ "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
+    //{ "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
+    //{ "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
     // { "/node/info",  COAP_GET, _handler_info, NULL },
     { "/riot/board", COAP_GET, _riot_board_handler, NULL},
     //{ "/sense/hum",  COAP_GET, _handler_dummy, NULL },
@@ -197,17 +197,17 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
     return 0;
 }
 
-static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 0);
-}
+//static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+//    return _led_handler(pdu, buf, len, ctx, 0);
+//}
 
-static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 1);
-}
+//static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+//    return _led_handler(pdu, buf, len, ctx, 1);
+//}
 
-static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-    return _led_handler(pdu, buf, len, ctx, 2);
-}
+//static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+//    return _led_handler(pdu, buf, len, ctx, 2);
+//}
 
 //static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
 //    return _led_handler(pdu, buf, len, ctx, 3);
@@ -226,63 +226,63 @@ static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void
 //}
 
 
-static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
-{
-    saul_reg_t *dev = NULL;
-    int dim = 0;
-    phydat_t res;
-    phydat_t data;
+//static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
+//{
+//    saul_reg_t *dev = NULL;
+//    int dim = 0;
+//    phydat_t res;
+//    phydat_t data;
 
-    (void)ctx;
+//    (void)ctx;
     
     /* read coap method type in packet */
-    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+//    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
     
-    switch (method_flag) {
-        case COAP_GET:
-            gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-            coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
-            size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+//    switch (method_flag) {
+//        case COAP_GET:
+//            gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+//            coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+//            size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
             //num = atoi(argv[2]);
-            dev = saul_reg_find_nth(dev_num);
-            if (dev == NULL){
-                puts("error: undefined device given");
-                return -1;
-                }
-            dim = saul_reg_read(dev, &res);
+//            dev = saul_reg_find_nth(dev_num);
+//            if (dev == NULL){
+//                puts("error: undefined device given");
+//                return -1;
+//                }
+//            dim = saul_reg_read(dev, &res);
             /* write the response buffer with the request count value */
-            resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
-            return resp_len;
+//            resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
+//            return resp_len;
 
-        case COAP_PUT:
+//        case COAP_PUT:
             /* convert the payload to an integer and update the internal
                value */
-            if (pdu->payload_len <= 5) {
-                char payload[6] = { 0 };
-                memcpy(payload, (char *)pdu->payload, pdu->payload_len);
-                int num = atoi(payload);
+//            if (pdu->payload_len <= 5) {
+//                char payload[6] = { 0 };
+//                memcpy(payload, (char *)pdu->payload, pdu->payload_len);
+//                int num = atoi(payload);
 
-                dev = saul_reg_find_nth(dev_num);
+//                dev = saul_reg_find_nth(dev_num);
 
-                memset(&data, 0, sizeof(data));
+//                memset(&data, 0, sizeof(data));
 
-                dim = 1;
-                data.val[0] = num;
+//                dim = 1;
+//                data.val[0] = num;
 
-                phydat_dump(&data, dim);
+//                phydat_dump(&data, dim);
 
-                dim = saul_reg_write(dev, &data);
+//                dim = saul_reg_write(dev, &data);
 
-                req_count = (uint16_t)strtoul(payload, NULL, 10);
-                return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
-            }
-            else {
-                return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
-            }
-    }
-    return 0;
-}
+//                req_count = (uint16_t)strtoul(payload, NULL, 10);
+//                return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
+//            }
+//            else {
+//                return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
+//            }
+//    }
+//    return 0;
+//}
 
 static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, void *ctx)
 {
