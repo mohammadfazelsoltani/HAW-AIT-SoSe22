@@ -61,6 +61,8 @@ static const credman_credential_t credential = {
 };
 #endif
 
+#define NODE_INFO  "SOME NODE INFORMATION"
+
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
