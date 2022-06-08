@@ -28,6 +28,8 @@
 #include "net/cord/ep_standalone.h"
 #include "fmt.h"
 
+
+#define NODE_INFO  "SOME NODE INFORMATION"
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
