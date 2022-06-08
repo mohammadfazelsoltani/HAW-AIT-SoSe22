@@ -87,7 +87,7 @@ static const coap_resource_t _resources[] = {
     //{ "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
     //{ "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
     // { "/node/info",  COAP_GET, _handler_info, NULL },
-    { "/riot/board", COAP_GET, _riot_board_handler, NULL},
+    { "/riot/board", COAP_GET, _riot_board_handler, NULL}
     //{ "/sense/hum",  COAP_GET, _handler_dummy, NULL },
     //{ "/sense/temp", COAP_GET, _handler_dummy, NULL },
     //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
