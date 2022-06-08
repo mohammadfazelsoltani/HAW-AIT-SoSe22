@@ -80,17 +80,17 @@ static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
 static const coap_resource_t _resources[] = {
-    { "/button/csZero", COAP_GET , _button_handler_cs0, NULL },
-    { "/button/swZero", COAP_GET , _button_handler_sw0, NULL },
+    //{ "/button/csZero", COAP_GET , _button_handler_cs0, NULL },
+    //{ "/button/swZero", COAP_GET , _button_handler_sw0, NULL },
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
     { "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
     { "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
     { "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
     { "/node/info",  COAP_GET, _handler_info, NULL },
     { "/riot/board", COAP_GET, _riot_board_handler, NULL},
-    { "/sense/hum",  COAP_GET, _handler_dummy, NULL },
-    { "/sense/temp", COAP_GET, _handler_dummy, NULL },
-    { "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
+    //{ "/sense/hum",  COAP_GET, _handler_dummy, NULL },
+    //{ "/sense/temp", COAP_GET, _handler_dummy, NULL },
+    //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sensor/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
 
