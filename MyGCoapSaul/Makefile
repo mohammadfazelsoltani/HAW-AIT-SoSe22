@@ -29,6 +29,7 @@ endif
 
 USEMODULE += gcoap
 USEMODULE += saul_default
+USEMODULE += cord_ep_standalone
 
 # Required by gcoap example
 USEMODULE += od
