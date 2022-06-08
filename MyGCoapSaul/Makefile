@@ -32,8 +32,6 @@ USEMODULE += netutils
 USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
-# Add Buffer Size
-CFLAGS += -DCONFIG_GCOAP_PDU_BUF_SIZE=1024
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
@@ -59,6 +57,9 @@ ifeq (1,$(USE_ZEP))
 endif
 
 include $(RIOTBASE)/Makefile.include
+
+# Add Buffer Size
+CFLAGS += -DCONFIG_GCOAP_PDU_BUF_SIZE=1024
 
 # For now this goes after the inclusion of Makefile.include so Kconfig symbols
 # are available. Only set configuration via CFLAGS if Kconfig is not being used
