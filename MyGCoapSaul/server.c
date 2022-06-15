@@ -72,7 +72,7 @@ static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void 
 //static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-//static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
