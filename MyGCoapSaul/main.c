@@ -31,6 +31,9 @@
 #include "net/cord/config.h"
 #include "net/ipv6/addr.h"
 #include "net/cord/ep.h"
+#include "net/sock/util.h"
+#include "net/gnrc/netif.h"
+#include "net/nanocoap.h"
 
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
@@ -56,6 +59,24 @@ static void _on_ep_event(cord_ep_standalone_event_t event)
     }
 }
 
+static int make_sock_ep(sock_udp_ep_t *ep, const char *addr)
+{
+    ep->port = 0;
+    if (sock_udp_name2ep(ep, addr) < 0) {
+        return -1;
+    }
+    /* if netif not specified in addr */
+    if ((ep->netif == SOCK_ADDR_ANY_NETIF) && (gnrc_netif_numof() == 1)) {
+        /* assign the single interface found in gnrc_netif_numof() */
+        ep->netif = (uint16_t)gnrc_netif_iter(NULL)->pid;
+    }
+    ep->family  = AF_INET6;
+    if (ep->port == 0) {
+        ep->port = COAP_PORT;
+    }
+    return 0;
+}
+
 int main(void)
 {
     puts("Welcome to MyGCoapASaul Example!\n");
@@ -70,13 +91,12 @@ int main(void)
 
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
-    puts("My border routers:");
-    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
-    {
-        gnrc_ipv6_nib_abr_print(&abr);
-        cord_ep_register(NULL, &abr);
-    }
-
+    sock_udp_ep_t remote;
+    char *regif = NULL;
+    make_sock_ep(&remote,regif)
+    cord_ep_register(&remote,regif);
+    //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
+    //{}
     //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
 
     puts("Client information:");
