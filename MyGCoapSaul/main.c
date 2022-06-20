@@ -88,6 +88,7 @@ int main(void)
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     server_init();
     
+    xtimer_sleep(10);
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
 
@@ -100,8 +101,7 @@ int main(void)
     }
     */
     char buffer[IPV6_ADDR_MAX_STR_LEN];
-    char* resu = ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
-    printf(resu);
+    ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
     sock_udp_ep_t remote;
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
