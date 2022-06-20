@@ -90,14 +90,15 @@ int main(void)
     
 
     void *state = NULL;
-    gnrc_ipv6_nib_abr_t entry;
-
-    while (gnrc_ipv6_nib_abr_iter(&state, &entry))
+    gnrc_ipv6_nib_abr_t abr;
+    puts("My border routers:");
+    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
-        gnrc_ipv6_nib_abr_print(&entry);
+        gnrc_ipv6_nib_abr_print(&abr);
     }
+
     char buffer[IPV6_ADDR_MAX_STR_LEN];
-    ipv6_addr_to_str(buffer, (ipv6_addr_t*) &entry.addr, IPV6_ADDR_MAX_STR_LEN);
+    ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
 
     sock_udp_ep_t remote;
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
