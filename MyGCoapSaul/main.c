@@ -93,7 +93,7 @@ int main(void)
     //gnrc_ipv6_nib_abr_t abr;
     sock_udp_ep_t remote;
     char *regif = NULL;
-    make_sock_ep(&remote,regif)
+    make_sock_ep(&remote,regif);
     cord_ep_register(&remote,regif);
     //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     //{}
