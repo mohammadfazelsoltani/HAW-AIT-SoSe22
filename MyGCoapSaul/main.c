@@ -27,7 +27,7 @@
 #include "net/cord/common.h"
 #include "net/cord/ep_standalone.h"
 #include "fmt.h"
-
+#include "net/gnrc/ipv6/nib/abr.h"
 
 
 #define MAIN_QUEUE_SIZE (4)
@@ -65,6 +65,14 @@ int main(void)
     
     /* register event callback with cord_ep_standalone */
     cord_ep_standalone_reg_cb(_on_ep_event);
+
+    void *state = NULL;
+    gnrc_ipv6_nib_abr_t abr;
+    puts("My border routers:");
+    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
+    {
+        gnrc_ipv6_nib_abr_print(&abr);
+    }
 
     printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
 
