@@ -91,11 +91,6 @@ int main(void)
     /* register event callback with cord_ep_standalone */
     cord_ep_standalone_reg_cb(_on_ep_event);
 
-    /* start shell */
-    puts("All up, running the shell now");
-    char line_buf[SHELL_DEFAULT_BUFSIZE];
-    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
-
     void *state = NULL;
     gnrc_ipv6_nib_abr_t entry;
 
@@ -128,5 +123,10 @@ int main(void)
     puts("Client information:");
     printf("  ep: %s\n", cord_common_get_ep());
     printf("  lt: %is\n", (int)CONFIG_CORD_LT);
-    
+
+    /* start shell */
+    puts("All up, running the shell now");
+    char line_buf[SHELL_DEFAULT_BUFSIZE];
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
+
 }
