@@ -91,10 +91,10 @@ int main(void)
 
     //void *state = NULL;
     //gnrc_ipv6_nib_abr_t abr;
-    sock_udp_ep_t remote;
-    char *regif = NULL;
-    make_sock_ep(&remote,regif);
-    cord_ep_register(&remote,regif);
+    //sock_udp_ep_t remote;
+    //char *regif = NULL;
+    //make_sock_ep(&remote,regif);
+    //cord_ep_register(&remote,regif);
     //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     //{}
     //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
