@@ -89,8 +89,8 @@ int main(void)
     /* register event callback with cord_ep_standalone */
     cord_ep_standalone_reg_cb(_on_ep_event);
 
-    void *state = NULL;
-    gnrc_ipv6_nib_abr_t abr;
+    //void *state = NULL;
+    //gnrc_ipv6_nib_abr_t abr;
     sock_udp_ep_t remote;
     char *regif = NULL;
     make_sock_ep(&remote,regif)
