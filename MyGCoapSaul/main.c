@@ -110,7 +110,7 @@ int main(void)
     puts(regif);
 
     make_sock_ep(&remote,regif);
-
+    /*
     puts("Registering with RD now, this may take a short while...");
     if (cord_ep_register(&remote, regif) != CORD_EP_OK) {
         puts("error: registration failed");
@@ -119,6 +119,7 @@ int main(void)
         puts("registration successful\n");
         cord_ep_dump_status();
     }
+    */
 
     //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     //{}
