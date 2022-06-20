@@ -101,7 +101,7 @@ int main(void)
     
     char buffer[IPV6_ADDR_MAX_STR_LEN];
     ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
-    sock_udp_ep_t remote;
+    
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
     sprintf(regif, "[%s]", buffer);
@@ -109,6 +109,7 @@ int main(void)
     puts("regif address:");
     puts(regif);
 
+    sock_udp_ep_t remote;
     if(make_sock_ep(&remote,regif) != 0){
         puts("error: socket failed");
     }

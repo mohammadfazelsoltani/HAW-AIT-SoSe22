@@ -71,7 +71,7 @@ static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, voi
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 //static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-//static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
@@ -91,6 +91,7 @@ static const coap_resource_t _resources[] = {
     //{ "/sense/hum",  COAP_GET, _handler_dummy, NULL },
     //{ "/sense/temp", COAP_GET, _handler_dummy, NULL },
     //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
+    { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
 
@@ -225,6 +226,9 @@ static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, v
     return _led_handler(pdu, buf, len, ctx, 5);
 }
 
+static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 8);
+}
 
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num)
 {
