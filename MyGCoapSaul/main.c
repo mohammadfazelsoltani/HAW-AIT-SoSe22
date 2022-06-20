@@ -108,9 +108,10 @@ int main(void)
     
     puts("regif address:");
     puts(regif);
-    
-    xtimer_sleep(10);
-    make_sock_ep(&remote,regif);
+
+    if(make_sock_ep(&remote,regif) != 0){
+        puts("error: socket failed");
+    }
     
     puts("Registering with RD now, this may take a short while...");
     if (cord_ep_register(&remote, regif) != CORD_EP_OK) {
