@@ -103,7 +103,9 @@ int main(void)
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
     while (gnrc_ipv6_nib_abr_iter(&state, &entry))
-    {puts(&entry);}
+    {
+        puts(entry);
+    }
 
     sprintf(regif, "[%s]", buffer);
     
