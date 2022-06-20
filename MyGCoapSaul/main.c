@@ -88,7 +88,6 @@ int main(void)
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     server_init();
     
-    xtimer_sleep(10);
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
 
