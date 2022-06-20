@@ -88,7 +88,6 @@ int main(void)
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     server_init();
     
-
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
 
@@ -101,8 +100,8 @@ int main(void)
     }
     */
     char buffer[IPV6_ADDR_MAX_STR_LEN];
-    ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
-
+    char* resu = ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
+    printf(resu);
     sock_udp_ep_t remote;
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
@@ -110,10 +109,8 @@ int main(void)
     
     puts("regif address:");
     puts(regif);
-    //puts(regif);
 
     make_sock_ep(&remote,regif);
-    //cord_ep_register(&remote,regif);
 
     puts("Registering with RD now, this may take a short while...");
     if (cord_ep_register(&remote, regif) != CORD_EP_OK) {
