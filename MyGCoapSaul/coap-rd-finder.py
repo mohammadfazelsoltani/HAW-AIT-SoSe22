@@ -19,9 +19,6 @@ async def main():
 
     protocol = await Context.create_client_context()
 
-    
-
-
     while(1):
 
         request = Message(code=GET, uri='coap://' + host + '/resource-lookup/')
@@ -48,8 +45,8 @@ async def main():
 
                 try:
                     response = await protocol.request(request).response
-                    print(res)
-                    print(response.payload)
+                    print("response is: ")
+                    print(json.load(res))
                 except Exception as e:
                     print('Failed to fetch resource:')
                     print(e)
@@ -57,7 +54,7 @@ async def main():
             #print("resources found")
             #print(resources)
 
-        time.sleep(3)
+        #time.sleep(3)
 
 
 
