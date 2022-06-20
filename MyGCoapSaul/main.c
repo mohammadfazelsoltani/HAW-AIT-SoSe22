@@ -102,8 +102,8 @@ int main(void)
     sock_udp_ep_t remote;
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
-    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
-    {puts(&abr);}
+    while (gnrc_ipv6_nib_abr_iter(&state, &entry))
+    {puts(&entry);}
 
     sprintf(regif, "[%s]", buffer);
     
