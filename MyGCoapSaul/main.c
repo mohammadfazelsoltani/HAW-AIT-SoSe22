@@ -91,12 +91,14 @@ int main(void)
 
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
+
     puts("My border routers:");
-    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
+    gnrc_ipv6_nib_abr_iter(&state, &abr)
+    /*while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
         gnrc_ipv6_nib_abr_print(&abr);
     }
-
+    */
     char buffer[IPV6_ADDR_MAX_STR_LEN];
     ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
 
@@ -105,7 +107,8 @@ int main(void)
 
     sprintf(regif, "[%s]", buffer);
     
-    puts(regif);
+    puts("regif address: %s", regif);
+    //puts(regif);
 
     make_sock_ep(&remote,regif);
     //cord_ep_register(&remote,regif);
