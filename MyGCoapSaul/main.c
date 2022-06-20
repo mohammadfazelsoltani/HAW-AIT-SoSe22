@@ -92,7 +92,7 @@ int main(void)
     gnrc_ipv6_nib_abr_t abr;
 
     puts("My border routers:");
-    gnrc_ipv6_nib_abr_iter(&state, &abr);
+    //gnrc_ipv6_nib_abr_iter(&state, &abr);
     //gnrc_ipv6_nib_abr_print(&abr);
     while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
@@ -108,7 +108,8 @@ int main(void)
     
     puts("regif address:");
     puts(regif);
-
+    
+    xtimer_sleep(10);
     make_sock_ep(&remote,regif);
     
     puts("Registering with RD now, this may take a short while...");
