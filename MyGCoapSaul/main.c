@@ -97,7 +97,7 @@ int main(void)
         gnrc_ipv6_nib_abr_print(&entry);
     }
     char buffer[IPV6_ADDR_MAX_STR_LEN];
-    ipv6_addr_to_str(buffer, (ipv6_addr_t *) entry.addr, sizeof(buffer));
+    ipv6_addr_to_str(buffer, (ipv6_addr_t*) entry.addr, sizeof(buffer));
 
     sock_udp_ep_t remote;
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
