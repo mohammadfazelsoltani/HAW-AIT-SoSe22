@@ -74,6 +74,7 @@ int main(void)
     while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
         gnrc_ipv6_nib_abr_print(&abr);
+        cord_ep_register(NULL, &abr);
     }
 
     //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
