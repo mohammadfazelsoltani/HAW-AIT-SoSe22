@@ -103,8 +103,9 @@ int main(void)
     char regif[IPV6_ADDR_MAX_STR_LEN + 2];
 
     sprintf(regif, "[%s]", buffer);
-
-    make_sock_ep(&remote,regif);
+    
+    puts("make_sock_ep");
+    puts(make_sock_ep(&remote,regif));
     //cord_ep_register(&remote,regif);
 
     puts("Registering with RD now, this may take a short while...");
