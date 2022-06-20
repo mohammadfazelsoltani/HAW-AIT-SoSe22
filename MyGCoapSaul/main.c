@@ -93,7 +93,7 @@ int main(void)
     gnrc_ipv6_nib_abr_t abr;
 
     puts("My border routers:");
-    gnrc_ipv6_nib_abr_iter(&state, &abr)
+    gnrc_ipv6_nib_abr_iter(&state, &abr);
     /*while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
         gnrc_ipv6_nib_abr_print(&abr);
