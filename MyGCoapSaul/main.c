@@ -104,7 +104,9 @@ int main(void)
 
     sprintf(regif, "[%s]", buffer);
     
-    puts("make_sock_ep: %i", make_sock_ep(&remote,regif));
+    puts(regif);
+
+    make_sock_ep(&remote,regif);
     //cord_ep_register(&remote,regif);
 
     puts("Registering with RD now, this may take a short while...");
