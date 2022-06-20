@@ -93,12 +93,12 @@ int main(void)
 
     puts("My border routers:");
     gnrc_ipv6_nib_abr_iter(&state, &abr);
-    gnrc_ipv6_nib_abr_print(&abr);
-    /*while (gnrc_ipv6_nib_abr_iter(&state, &abr))
+    //gnrc_ipv6_nib_abr_print(&abr);
+    while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
         gnrc_ipv6_nib_abr_print(&abr);
     }
-    */
+    
     char buffer[IPV6_ADDR_MAX_STR_LEN];
     ipv6_addr_to_str(buffer, (ipv6_addr_t*) &abr.addr, IPV6_ADDR_MAX_STR_LEN);
     sock_udp_ep_t remote;
