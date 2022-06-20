@@ -107,7 +107,8 @@ int main(void)
 
     sprintf(regif, "[%s]", buffer);
     
-    puts("regif address: %s", regif);
+    puts("regif address:")
+    puts(regif);
     //puts(regif);
 
     make_sock_ep(&remote,regif);
