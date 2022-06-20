@@ -16,7 +16,7 @@ USEMODULE += netdev_default
 USEMODULE += auto_init_gnrc_netif
 # Specify the mandatory networking modules
 USEMODULE += gnrc_ipv6_default
-USEMODULE += gnrc_ipv6_nib_6lbr
+#USEMODULE += gnrc_ipv6_nib_6lbr
 USEMODULE += gnrc_ipv6_router_default
 # Additional networking modules that can be dropped if not needed
 USEMODULE += gnrc_icmpv6_echo
