@@ -107,7 +107,7 @@ int main(void)
 
     sprintf(regif, "[%s]", buffer);
     
-    puts("regif address:")
+    puts("regif address:");
     puts(regif);
     //puts(regif);
 
