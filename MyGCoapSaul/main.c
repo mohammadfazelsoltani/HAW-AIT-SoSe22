@@ -88,14 +88,8 @@ int main(void)
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
     server_init();
     
-    /* register event callback with cord_ep_standalone */
-    cord_ep_standalone_reg_cb(_on_ep_event);
 
-    sock_udp_ep_t remote;
-    char *regif = NULL;
-    make_sock_ep(&remote,regif);
-
-    /*void *state = NULL;
+    void *state = NULL;
     gnrc_ipv6_nib_abr_t entry;
 
     while (gnrc_ipv6_nib_abr_iter(&state, &entry))
@@ -112,7 +106,7 @@ int main(void)
     
     puts(regif);
 
-    make_sock_ep(&remote,regif);*/
+    make_sock_ep(&remote,regif);
     //cord_ep_register(&remote,regif);
 
     puts("Registering with RD now, this may take a short while...");
@@ -131,6 +125,9 @@ int main(void)
     puts("Client information:");
     printf("  ep: %s\n", cord_common_get_ep());
     printf("  lt: %is\n", (int)CONFIG_CORD_LT);
+
+    /* register event callback with cord_ep_standalone */
+    cord_ep_standalone_reg_cb(_on_ep_event);
 
     /* start shell */
     puts("All up, running the shell now");
