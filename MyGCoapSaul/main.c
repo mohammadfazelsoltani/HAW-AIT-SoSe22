@@ -34,6 +34,7 @@
 #include "net/sock/util.h"
 #include "net/gnrc/netif.h"
 #include "net/nanocoap.h"
+#include "xtimer.h"
 
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
@@ -79,6 +80,7 @@ static int make_sock_ep(sock_udp_ep_t *ep, const char *addr)
 
 int main(void)
 {
+    xtimer_sleep(1);
     puts("Welcome to MyGCoapASaul Example!\n");
     puts("Type `help` for help\n");
 
@@ -94,12 +96,22 @@ int main(void)
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 
-    //void *state = NULL;
-    //gnrc_ipv6_nib_abr_t abr;
+    void *state = NULL;
+    gnrc_ipv6_nib_abr_t entry;
+    
+    gnrc_ipv6_nib_abr_iter(&state, &entry)
+
+    char buffer[IPV6_ADDR_MAX_STR_LEN];
+    ipv6_addr_to_str(buffer, (ipv6_addr_t*) &entry.addr, sizeof(buffer))
+
     sock_udp_ep_t remote;
-    char *regif = NULL;
+    char regif[IPV6_ADDR_MAX_STR_LEN + 2];
+
+    sprintf(regif, "[%s]", buffer);
+
     make_sock_ep(&remote,regif);
     cord_ep_register(&remote,regif);
+
     //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     //{}
     //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
