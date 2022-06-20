@@ -104,7 +104,7 @@ int main(void)
 
     while (gnrc_ipv6_nib_abr_iter(&state, &entry))
     {
-        puts(entry);
+        gnrc_ipv6_nib_abr_print(&entry);
     }
 
     sprintf(regif, "[%s]", buffer);
