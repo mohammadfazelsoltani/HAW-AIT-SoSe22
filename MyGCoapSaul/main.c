@@ -28,7 +28,9 @@
 #include "net/cord/ep_standalone.h"
 #include "fmt.h"
 #include "net/gnrc/ipv6/nib/abr.h"
-
+#include "net/cord/config.h"
+#include "net/ipv6/addr.h"
+#include "net/cord/ep.h"
 
 #define MAIN_QUEUE_SIZE (4)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
@@ -74,7 +76,7 @@ int main(void)
         gnrc_ipv6_nib_abr_print(&abr);
     }
 
-    printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
+    //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
 
     puts("Client information:");
     printf("  ep: %s\n", cord_common_get_ep());
