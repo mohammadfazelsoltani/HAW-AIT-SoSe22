@@ -114,7 +114,7 @@ int main(void)
     }
     
     puts("Registering with RD now, this may take a short while...");
-    if (cord_ep_register(&remote, regif) != CORD_EP_OK) {
+    if (cord_ep_register(&remote, NULL) != CORD_EP_OK) {
         puts("error: registration failed");
     }
     else {
