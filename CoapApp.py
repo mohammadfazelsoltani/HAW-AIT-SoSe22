@@ -9,10 +9,10 @@ from aiocoap import *
 
 logging.basicConfig(level=logging.INFO)
 
-async def getWellKnownCore():
+def getWellKnownCore():
     return Message(code=GET, uri='coap://[::1]/.well-known/core')
 
-async def getResourceLookup():
+def getResourceLookup():
     return Message(code=GET, uri='coap://[::1]/resource-lookup/')
 
 async def main():
