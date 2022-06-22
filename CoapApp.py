@@ -10,12 +10,15 @@ from aiocoap import *
 logging.basicConfig(level=logging.INFO)
 
 async def getWellKnownCore():
-    pass
+    return Message(code=GET, uri='coap://[::1]/.well-known/core')
+
+async def getResourceLookup():
+    return Message(code=GET, uri='coap://[::1]/resource-lookup/')
 
 async def main():
     protocol = await Context.create_client_context()
 
-    request = Message(code=GET, uri='coap://[::1]/.well-known/core')
+    request = getResourceLookup()
     
     try:
         response = await protocol.request(request).response
