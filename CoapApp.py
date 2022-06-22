@@ -46,10 +46,13 @@ def put_red_led_off_req():
 def get_temperature_req():
     return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/sense/temp')
 
+def get_accel_req():
+    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/sense/accel')
+
 async def main():
     protocol = await Context.create_client_context()
 
-    request = getResourceLookupReq()
+    request = get_accel_req()
     
     try:
         response = await protocol.request(request).response
