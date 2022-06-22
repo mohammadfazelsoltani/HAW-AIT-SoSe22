@@ -22,11 +22,14 @@ async def main():
     
     try:
         response = await protocol.request(request).response
+        resources = response.split(",")
     except Exception as e:
         print('Failed to fetch resource:')
         print(e)
     else:
         print('Result: %s\n%r'%(response.code, response.payload))
+        for resource in resources:
+            print(resource)
     pass
 
 # main-Function
