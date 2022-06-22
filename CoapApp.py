@@ -27,7 +27,7 @@ async def main():
         print(e)
     else:
         print('Result: %s\n%r'%(response.code, response.payload))
-        resources = response.split(",")
+        resources = response.payload.split(",")
         for resource in resources:
             print(resource)
     pass
