@@ -9,16 +9,47 @@ from aiocoap import *
 
 logging.basicConfig(level=logging.INFO)
 
+
 def getWellKnownCore():
     return Message(code=GET, uri='coap://[::1]/.well-known/core')
 
-def getResourceLookup():
+def getResourceLookupReq():
     return Message(code=GET, uri='coap://[::1]/resource-lookup/')
+
+def get_blue_led_req():
+    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/blue')
+
+def put_blue_led_on_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/blue --payload=1')
+
+def put_blue_led_off_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/blue --payload=0')
+
+def get_green_led_req():
+    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/green')
+
+def put_green_led_on_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/green --payload=1')
+
+def put_green_led_off_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/green --payload=0')
+
+def get_red_led_req():
+    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/red')
+
+def put_red_led_on_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/red --payload=1')
+
+def put_red_led_off_req():
+    return Message(code=PUT, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/led/red --payload=0')
+
+def get_temperature_req():
+    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/sense/temp')
 
 async def main():
     protocol = await Context.create_client_context()
 
-    request = getResourceLookup()
+    request = getResourceLookupReq()
     
     try:
         response = await protocol.request(request).response
