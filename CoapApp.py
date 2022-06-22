@@ -9,12 +9,13 @@ from aiocoap import *
 
 logging.basicConfig(level=logging.INFO)
 
-
+async def getWellKnownCore():
+    pass
 
 async def main():
     protocol = await Context.create_client_context()
 
-    request = Message(code=GET, uri='coap://localhost/led/green')
+    request = Message(code=GET, uri='coap://[::1]/.well-known/core')
     
     try:
         response = await protocol.request(request).response
