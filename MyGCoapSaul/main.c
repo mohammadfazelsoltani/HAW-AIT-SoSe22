@@ -11,7 +11,7 @@
  * @{
  *
  * @file
- * @brief       Example for demonstrating GCOAP, SAUL and the SAUL registry
+ * @brief       Custom RIOT-Firmware with GCOAP and SAUL
  *
  * @author      Frank Matthiesen and Mohammad Fazel Soltani
  *
@@ -78,22 +78,29 @@ static int make_sock_ep(sock_udp_ep_t *ep, const char *addr)
     return 0;
 }
 
-int main(void)
+static void register_on_resource_directory(char *ifaddr)
 {
-    xtimer_sleep(1);
-    puts("Welcome to MyGCoapASaul Example!\n");
-    puts("Type `help` for help\n");
-
-    /* for the thread running the shell */
-    msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-    server_init();
+    sock_udp_ep_t remote;
+    if(make_sock_ep(&remote,ifaddr) != 0){
+        puts("error: socket failed");
+    }
     
+    puts("Registering with RD now, this may take a short while...");
+    if (cord_ep_register(&remote, NULL) != CORD_EP_OK) {
+        puts("error: registration failed");
+    }
+    else {
+        puts("registration successful\n");
+        cord_ep_dump_status();
+    }
+}
+
+static void automatic_register(void)
+{
     void *state = NULL;
     gnrc_ipv6_nib_abr_t abr;
 
     puts("My border routers:");
-    //gnrc_ipv6_nib_abr_iter(&state, &abr);
-    //gnrc_ipv6_nib_abr_print(&abr);
     while (gnrc_ipv6_nib_abr_iter(&state, &abr))
     {
         gnrc_ipv6_nib_abr_print(&abr);
@@ -106,34 +113,30 @@ int main(void)
 
     sprintf(regif, "[%s]", buffer);
     
-    puts("regif address:");
+    puts("Registered interface address:");
     puts(regif);
 
-    sock_udp_ep_t remote;
-    if(make_sock_ep(&remote,regif) != 0){
-        puts("error: socket failed");
-    }
-    
-    puts("Registering with RD now, this may take a short while...");
-    if (cord_ep_register(&remote, NULL) != CORD_EP_OK) {
-        puts("error: registration failed");
-    }
-    else {
-        puts("registration successful\n");
-        cord_ep_dump_status();
-    }
-    
+    register_on_resource_directory(regif);
+}
 
-    //while (gnrc_ipv6_nib_abr_iter(&state, &abr))
-    //{}
-    //printf("%d\n", CONFIG_GCOAP_PDU_BUF_SIZE);
+int main(void)
+{
+    xtimer_sleep(1);
+    puts("Welcome to the Custom RIOT Firmware of Frank and Fazel!\n");
+    puts("Type `help` for help\n");
+
+    /* for the thread running the shell */
+    msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
+    /*initialize server with coap and saul functions*/
+    server_init();
+    /*automatic register to resource directory*/
+    automatic_register();
+    /* register event callback with cord_ep_standalone */
+    cord_ep_standalone_reg_cb(_on_ep_event);
 
     puts("Client information:");
     printf("  ep: %s\n", cord_common_get_ep());
     printf("  lt: %is\n", (int)CONFIG_CORD_LT);
-
-    /* register event callback with cord_ep_standalone */
-    cord_ep_standalone_reg_cb(_on_ep_event);
 
     /* start shell */
     puts("All up, running the shell now");
