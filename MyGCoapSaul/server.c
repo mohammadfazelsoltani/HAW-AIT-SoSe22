@@ -322,7 +322,7 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
                 
                 char *endptr;
                 int32_t value = (uint32_t)strtoul(payload, &endptr, 10);
-                phydat_fit(&data, &value, 1)
+                phydat_fit(&data, &value, 1);
 
                 if(saul_reg_write(saul_device, &data) < 0)
                 {
