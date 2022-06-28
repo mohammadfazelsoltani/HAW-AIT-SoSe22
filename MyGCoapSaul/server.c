@@ -65,7 +65,6 @@ static const credman_credential_t credential = {
 #define GCOAP_PATH_LEN 32
 
 /*
-static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
@@ -76,11 +75,11 @@ static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, v
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
-static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 */
+static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
@@ -137,6 +136,7 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
     return res;
 }
 */
+
 /*
  * Server callback for /cli/stats. Accepts either a GET or a PUT.
  *
@@ -145,7 +145,6 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
  *      allows any two byte value for example purposes. Semantically, the only
  *      valid action is to set the value to 0.
  */
-/*
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
     (void)ctx;
@@ -178,7 +177,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 
     return 0;
 }
-
+/*
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     return _led_handler(pdu, buf, len, ctx, 0);
 }
@@ -348,7 +347,7 @@ static inline void generate_path(char *buffer, int id, saul_reg_t *reg) {
 static inline int compare_path(const void *a, const void *b) {
     return strcmp(((coap_resource_t*)a)->path, ((coap_resource_t*)b)->path);
 }
-/*
+
 void notify_observers(void)
 {
     size_t len;
@@ -373,7 +372,7 @@ void notify_observers(void)
         break;
     }
 }
-*/
+
 void server_init(void)
 {
 #if IS_USED(MODULE_GCOAP_DTLS)
