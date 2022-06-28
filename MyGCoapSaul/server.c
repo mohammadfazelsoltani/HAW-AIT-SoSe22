@@ -61,28 +61,30 @@ static const credman_credential_t credential = {
 };
 #endif
 
-#define NODE_INFO  "SOME NODE INFORMATION"
 #define GCOAP_RES_MAX 16
 #define GCOAP_PATH_LEN 32
 
-static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
-                            size_t maxlen, coap_link_encoder_ctx_t *context);
+/*
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_green(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-//static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-//static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
-static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-//static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
+static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
+*/
+static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
+                            size_t maxlen, coap_link_encoder_ctx_t *context);
+static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
-static const coap_resource_t _resources[] = {
+/*static const coap_resource_t _resources[] = {
     //{ "/button/csZero", COAP_GET , _button_handler_cs0, NULL },
     //{ "/button/swZero", COAP_GET , _button_handler_sw0, NULL },
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
@@ -96,7 +98,7 @@ static const coap_resource_t _resources[] = {
     //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
-};
+};*/
 
 static const char *_link_params[ARRAY_SIZE(_resources)] = {
     ";ct=0;rt=\"count\";obs",
@@ -133,34 +135,6 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
     }
 
     return res;
-}
-
-
-/* define some dummy CoAP resources */
-//static ssize_t _handler_dummy(coap_pkt_t *pdu,
-//                              uint8_t *buf, size_t len, void *ctx)
-//{
-//    (void)ctx;
-//
-//    /* get random data */
-//    int16_t val = 23;
-//
-//    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-//    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-//    resp_len += fmt_s16_dec((char *)pdu->payload, val);
-//    return resp_len;
-//}
-
-static ssize_t _handler_info(coap_pkt_t *pdu,
-                             uint8_t *buf, size_t len, void *ctx)
-{
-    (void)ctx;
-
-    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-    size_t slen = sizeof(NODE_INFO);
-    memcpy(pdu->payload, NODE_INFO, slen);
-    return resp_len + slen;
 }
 
 /*
@@ -204,7 +178,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 
     return 0;
 }
-
+/*
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     return _led_handler(pdu, buf, len, ctx, 0);
 }
@@ -217,17 +191,17 @@ static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void
     return _led_handler(pdu, buf, len, ctx, 2);
 }
 
-//static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-//    return _led_handler(pdu, buf, len, ctx, 3);
-//}
+static ssize_t _button_handler_sw0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 3);
+}
 
-//static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-//    return _led_handler(pdu, buf, len, ctx, 4);
-//}
+static ssize_t _button_handler_cs0(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 4);
+}
 
-//static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
-//    return _led_handler(pdu, buf, len, ctx, 8);
-//}
+static ssize_t _sensor_handler_accel(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
+    return _led_handler(pdu, buf, len, ctx, 8);
+}
 
 static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     return _led_handler(pdu, buf, len, ctx, 5);
@@ -246,7 +220,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
 
     (void)ctx;
     
-    /* read coap method type in packet */
+    //read coap method type in packet
     unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
     
     switch (method_flag) {
@@ -262,13 +236,13 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
                 return -1;
                 }
             dim = saul_reg_read(dev, &res);
-            /* write the response buffer with the request count value */
+            //write the response buffer with the request count value
             resp_len += phydat_to_json(&res, dim, (char *)pdu->payload);
             return resp_len;
 
         case COAP_PUT:
-            /* convert the payload to an integer and update the internal
-               value */
+            // convert the payload to an integer and update the internal
+               value
             if (pdu->payload_len <= 5) {
                 char payload[6] = { 0 };
                 memcpy(payload, (char *)pdu->payload, pdu->payload_len);
@@ -294,7 +268,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
     }
     return 0;
 }
-
+*/
 static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, void *ctx)
 {
     (void)ctx;
