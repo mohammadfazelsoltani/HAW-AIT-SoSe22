@@ -34,4 +34,12 @@ async def main():
 
 # main-Function
 if __name__ == "__main__":
-    asyncio.run(main())
+    # asyncio.run(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    task = loop.create_task(main())
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        print()
