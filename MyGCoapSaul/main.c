@@ -127,7 +127,7 @@ int main(void)
 
     /* for the thread running the shell */
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-    /*initialize server with coap and saul functions*/
+    /*initialize server with coap and saul resources*/
     server_init();
     /*automatic register to resource directory*/
     automatic_register();
