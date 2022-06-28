@@ -76,11 +76,11 @@ static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, v
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
+static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 */
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
-static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
@@ -98,13 +98,13 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
     //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
-};*/
+};
 
 static const char *_link_params[ARRAY_SIZE(_resources)] = {
     ";ct=0;rt=\"count\";obs",
     NULL
 };
-
+*/
 static coap_resources_t _resources[GCOAP_RES_MAX];
 
 static char _paths[GCOAP_RES_MAX][GCOAP_PATH_LEN];
@@ -145,11 +145,12 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
  *      allows any two byte value for example purposes. Semantically, the only
  *      valid action is to set the value to 0.
  */
+/*
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
     (void)ctx;
 
-    /* read coap method type in packet */
+    // read coap method type in packet
     unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
 
     switch (method_flag) {
@@ -158,13 +159,12 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
             coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
-            /* write the response buffer with the request count value */
+            // write the response buffer with the request count value
             resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
             return resp_len;
 
         case COAP_PUT:
-            /* convert the payload to an integer and update the internal
-               value */
+            // convert the payload to an integer and update the internal value
             if (pdu->payload_len <= 5) {
                 char payload[6] = { 0 };
                 memcpy(payload, (char *)pdu->payload, pdu->payload_len);
@@ -178,7 +178,7 @@ static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *c
 
     return 0;
 }
-/*
+
 static ssize_t _led_handler_red(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx){
     return _led_handler(pdu, buf, len, ctx, 0);
 }
@@ -268,7 +268,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
     }
     return 0;
 }
-*/
+
 static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, void *ctx)
 {
     (void)ctx;
@@ -276,7 +276,7 @@ static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, vo
     coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
     size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
 
-    /* write the RIOT board name in the response buffer */
+    //write the RIOT board name in the response buffer
     if (pdu->payload_len >= strlen(RIOT_BOARD)) {
         memcpy(pdu->payload, RIOT_BOARD, strlen(RIOT_BOARD));
         return resp_len + strlen(RIOT_BOARD);
@@ -286,7 +286,7 @@ static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, vo
         return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
     }
 }
-
+*/
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx)
 {
     /*pass context ctx to get the device*/
@@ -400,7 +400,7 @@ void server_init(void)
         _resources[number_of_saul_devices] = (coap_resource_t) {
             .path = _paths[number_of_saul_devices],
             .methods = COAP_GET | COAP_PUT,
-            .handler = saul_handler,
+            .handler = _saul_handler,
             .context = devices_to_be_registered
         };
     }
