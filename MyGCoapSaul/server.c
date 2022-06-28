@@ -400,7 +400,7 @@ void server_init(void)
         _resources[number_of_saul_devices] = (coap_resource_t) {
             .path = _paths[number_of_saul_devices],
             .methods = COAP_GET | COAP_PUT,
-            .handler = _saul_handler, _stats_handler,
+            .handler = _saul_handler | _stats_handler,
             .context = devices_to_be_registered
         };
     }
