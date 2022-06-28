@@ -99,13 +99,13 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
     { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
-
+*/
 static const char *_link_params[ARRAY_SIZE(_resources)] = {
     ";ct=0;rt=\"count\";obs",
     NULL
 };
-*/
-static coap_resources_t _resources[GCOAP_RES_MAX];
+
+static coap_resource_t _resources[GCOAP_RES_MAX];
 
 static char _paths[GCOAP_RES_MAX][GCOAP_PATH_LEN];
 
