@@ -339,7 +339,8 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
 
 /**/
 static inline void generate_path(char *buffer, int id, saul_reg_t *reg) {
-    snprintf(buffer, GCOAP_PATH_LEN, "/saul/%s-%s",
+    printf("Resource ID: %d\n", id);
+    snprintf(buffer, GCOAP_PATH_LEN, "/saul/%s/%s",
              reg->name,
              saul_class_to_str(reg->driver->type));
 }
@@ -347,14 +348,14 @@ static inline void generate_path(char *buffer, int id, saul_reg_t *reg) {
 static inline int compare_path(const void *a, const void *b) {
     return strcmp(((coap_resource_t*)a)->path, ((coap_resource_t*)b)->path);
 }
-
+/*
 void notify_observers(void)
 {
     size_t len;
     uint8_t buf[CONFIG_GCOAP_PDU_BUF_SIZE];
     coap_pkt_t pdu;
 
-    /* send Observe notification for /cli/stats */
+    // send Observe notification for /cli/stats 
     switch (gcoap_obs_init(&pdu, &buf[0], CONFIG_GCOAP_PDU_BUF_SIZE,
             &_resources[0])) {
     case GCOAP_OBS_INIT_OK:
@@ -372,7 +373,7 @@ void notify_observers(void)
         break;
     }
 }
-
+*/
 void server_init(void)
 {
 #if IS_USED(MODULE_GCOAP_DTLS)
