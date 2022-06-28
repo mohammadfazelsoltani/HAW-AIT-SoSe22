@@ -61,8 +61,8 @@ static const credman_credential_t credential = {
 };
 #endif
 
-#define GCOAP_RES_MAX 16
-#define GCOAP_PATH_LEN 32
+//#define GCOAP_RES_MAX 16
+//#define GCOAP_PATH_LEN 32
 
 /*
 static ssize_t _led_handler_blue(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
@@ -75,49 +75,45 @@ static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, v
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
-static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+*/
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
-*/
+static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
-/* CoAP resources. Must be sorted by path (ASCII order). */
-/*static const coap_resource_t _resources[] = {
+// CoAP resources. Must be sorted by path (ASCII order).
+static const coap_resource_t _resources[] = {
     //{ "/button/csZero", COAP_GET , _button_handler_cs0, NULL },
     //{ "/button/swZero", COAP_GET , _button_handler_sw0, NULL },
     { "/cli/stats", COAP_GET | COAP_PUT, _stats_handler, NULL },
-    { "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
-    { "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
-    { "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
-    { "/node/info",  COAP_GET, _handler_info, NULL },
+    //{ "/led/blue", COAP_GET | COAP_PUT, _led_handler_blue, NULL },
+    //{ "/led/green", COAP_GET | COAP_PUT, _led_handler_green, NULL },
+    //{ "/led/red", COAP_GET | COAP_PUT, _led_handler_red, NULL },
+    //{ "/node/info",  COAP_GET, _handler_info, NULL },
     { "/riot/board", COAP_GET, _riot_board_handler, NULL},
     //{ "/sense/hum",  COAP_GET, _handler_dummy, NULL },
     //{ "/sense/temp", COAP_GET, _handler_dummy, NULL },
     //{ "/sensor/accel", COAP_GET, _sensor_handler_accel, NULL },
-    { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
-    { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
+    //{ "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
+    //{ "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
 
 static const char *_link_params[ARRAY_SIZE(_resources)] = {
     ";ct=0;rt=\"count\";obs",
     NULL
 };
-*/
-static coap_resource_t _resources[GCOAP_RES_MAX];
-
-static char _paths[GCOAP_RES_MAX][GCOAP_PATH_LEN];
 
 static gcoap_listener_t _listener = {
     &_resources[0],
     ARRAY_SIZE(_resources),
     GCOAP_SOCKET_TYPE_UNDEF,
-    gcoap_encode_link,
+    _encode_link,
     NULL,
     NULL
 };
 
-/*
+
 // Adds link format params to resource list
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context) {
@@ -135,7 +131,6 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
 
     return res;
 }
-*/
 
 /*
  * Server callback for /cli/stats. Accepts either a GET or a PUT.
@@ -267,7 +262,7 @@ static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx
     }
     return 0;
 }
-
+*/
 static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, void *ctx)
 {
     (void)ctx;
@@ -285,7 +280,7 @@ static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, vo
         return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
     }
 }
-*/
+
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx)
 {
     /*pass context ctx to get the device*/
@@ -388,7 +383,7 @@ void server_init(void)
         printf("gcoap: cannot add credential to DTLS sock: %d\n", res);
     }
 #endif
-
+    /*
     int number_of_saul_devices = 0;
     for(
         saul_reg_t *devices_to_be_registered = saul_reg_find_nth(0);
@@ -400,11 +395,12 @@ void server_init(void)
         _resources[number_of_saul_devices] = (coap_resource_t) {
             .path = _paths[number_of_saul_devices],
             .methods = COAP_GET | COAP_PUT,
-            .handler = _saul_handler | _stats_handler,
+            .handler = _saul_handler,
             .context = devices_to_be_registered
         };
     }
     qsort(_resources, number_of_saul_devices, sizeof(coap_resource_t), compare_path);
     _listener.resources_len = number_of_saul_devices;
+    */
     gcoap_register_listener(&_listener);
 }

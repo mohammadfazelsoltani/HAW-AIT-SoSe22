@@ -36,7 +36,35 @@
 #include "net/nanocoap.h"
 #include "xtimer.h"
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include "net/utils.h"
+#include "od.h"
+#include "saul_reg.h"
+#include "phydat.h"
+#include "debug.h"
+
+
+#define GCOAP_RES_MAX 16
+#define GCOAP_PATH_LEN 32
 #define MAIN_QUEUE_SIZE (4)
+
+static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
+
+static coap_resource_t _resources[GCOAP_RES_MAX];
+
+static char _paths[GCOAP_RES_MAX][GCOAP_PATH_LEN];
+
+static gcoap_listener_t _listener = {
+    &_resources[0],
+    ARRAY_SIZE(_resources),
+    GCOAP_SOCKET_TYPE_UNDEF,
+    gcoap_encode_link,
+    NULL,
+    NULL
+};
+
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 static const shell_command_t shell_commands[] = {
@@ -44,7 +72,7 @@ static const shell_command_t shell_commands[] = {
     { NULL, NULL, NULL }
 };
 
-/* we will use a custom event handler for dumping cord_ep events */
+// we will use a custom event handler for dumping cord_ep events
 static void _on_ep_event(cord_ep_standalone_event_t event)
 {
     switch (event) {
@@ -119,6 +147,18 @@ static void automatic_register(void)
     register_on_resource_directory(regif);
 }
 
+/**/
+static inline void generate_path(char *buffer, int id, saul_reg_t *reg) {
+    printf("Resource ID: %d\n", id);
+    snprintf(buffer, GCOAP_PATH_LEN, "/saul/%s/%s",
+             reg->name,
+             saul_class_to_str(reg->driver->type));
+}
+/**/
+static inline int compare_path(const void *a, const void *b) {
+    return strcmp(((coap_resource_t*)a)->path, ((coap_resource_t*)b)->path);
+}
+
 int main(void)
 {
     xtimer_sleep(1);
@@ -127,8 +167,27 @@ int main(void)
 
     /* for the thread running the shell */
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-    /*initialize server with coap and saul resources*/
+    /*initialize server with gcoap*/
     server_init();
+    /*create saul resources*/
+    int number_of_saul_devices = 0;
+    for(
+        saul_reg_t *devices_to_be_registered = saul_reg_find_nth(0);
+        number_of_saul_devices < GCOAP_RES_MAX && devices_to_be_registered != NULL;
+        devices_to_be_registered = saul_reg_find_nth(++number_of_saul_devices)
+        )
+    {
+        generate_path(_paths[number_of_saul_devices], number_of_saul_devices, devices_to_be_registered);
+        _resources[number_of_saul_devices] = (coap_resource_t) {
+            .path = _paths[number_of_saul_devices],
+            .methods = COAP_GET | COAP_PUT,
+            .handler = _saul_handler,
+            .context = devices_to_be_registered
+        };
+    }
+    qsort(_resources, number_of_saul_devices, sizeof(coap_resource_t), compare_path);
+    _listener.resources_len = number_of_saul_devices;
+    gcoap_register_listener(&_listener);
     /*automatic register to resource directory*/
     automatic_register();
     /* register event callback with cord_ep_standalone */
