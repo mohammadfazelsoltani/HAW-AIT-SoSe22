@@ -78,9 +78,9 @@ static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ct
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-*/
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
+*/
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
@@ -99,12 +99,12 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
     { "/sense/accel", COAP_GET, _sensor_handler_accel, NULL },
     { "/sense/temp", COAP_GET, _sensor_handler_temp, NULL }
 };
-*/
+
 static const char *_link_params[ARRAY_SIZE(_resources)] = {
     ";ct=0;rt=\"count\";obs",
     NULL
 };
-
+*/
 static coap_resource_t _resources[GCOAP_RES_MAX];
 
 static char _paths[GCOAP_RES_MAX][GCOAP_PATH_LEN];
@@ -113,13 +113,13 @@ static gcoap_listener_t _listener = {
     &_resources[0],
     ARRAY_SIZE(_resources),
     GCOAP_SOCKET_TYPE_UNDEF,
-    _encode_link,
+    gcoap_encode_link,
     NULL,
     NULL
 };
 
-
-/* Adds link format params to resource list */
+/*
+// Adds link format params to resource list
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context) {
     ssize_t res = gcoap_encode_link(resource, buf, maxlen, context);
@@ -136,7 +136,7 @@ static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
 
     return res;
 }
-
+*/
 /*
  * Server callback for /cli/stats. Accepts either a GET or a PUT.
  *
