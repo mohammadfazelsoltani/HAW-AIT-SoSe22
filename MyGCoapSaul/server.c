@@ -75,12 +75,12 @@ static ssize_t _sensor_handler_temp(coap_pkt_t* pdu, uint8_t *buf, size_t len, v
 static ssize_t _led_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx, int dev_num);
 static ssize_t _handler_dummy(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 static ssize_t _handler_info(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
+static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 */
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
 static ssize_t _stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
-static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx);
 
 // CoAP resources. Must be sorted by path (ASCII order).
 static const coap_resource_t _resources[] = {
@@ -280,21 +280,21 @@ static ssize_t _riot_board_handler(coap_pkt_t *pdu, uint8_t *buf, size_t len, vo
         return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
     }
 }
-
+/*
 static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx)
 {
-    /*pass context ctx to get the device*/
+    // pass context ctx to get the device
     saul_reg_t* saul_device = (saul_reg_t*) ctx;
     
     phydat_t data = {0};
     int dim = 0;
 
-    /* read coap method type in packet */
+    //read coap method type in packet
     unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
 
     switch (method_flag) {
         case COAP_GET:
-            /*read the given saul device*/
+            //read the given saul device
             dim = saul_reg_read(saul_device, &data);
             if(dim < 0)
             {
@@ -304,12 +304,11 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
             coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
             size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
             
-            /* write the response buffer with the request count value */
+            //write the response buffer with the request count value
             resp_len += phydat_to_json(&data, dim, (char *)pdu->payload);
             return resp_len;
         case COAP_PUT:
-            /* convert the payload to an integer and update the internal
-                value */
+            //convert the payload to an integer and update the internal value
             if (pdu->payload_len <= 5) {
                 char payload[6] = { 0 };
                 memcpy(payload, (char *)pdu->payload, pdu->payload_len);
@@ -331,18 +330,17 @@ static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx
     return 0;
 }
 
-/**/
 static inline void generate_path(char *buffer, int id, saul_reg_t *reg) {
     printf("Resource ID: %d\n", id);
     snprintf(buffer, GCOAP_PATH_LEN, "/saul/%s/%s",
              reg->name,
              saul_class_to_str(reg->driver->type));
 }
-/**/
+
 static inline int compare_path(const void *a, const void *b) {
     return strcmp(((coap_resource_t*)a)->path, ((coap_resource_t*)b)->path);
 }
-
+*/
 void notify_observers(void)
 {
     size_t len;
