@@ -72,6 +72,56 @@ static const shell_command_t shell_commands[] = {
     { NULL, NULL, NULL }
 };
 
+static ssize_t _saul_handler(coap_pkt_t *pdu,uint8_t *buf, size_t len, void *ctx)
+{
+    /*pass context ctx to get the device*/
+    saul_reg_t* saul_device = (saul_reg_t*) ctx;
+    
+    phydat_t data = {0};
+    int dim = 0;
+
+    /* read coap method type in packet */
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+
+    switch (method_flag) {
+        case COAP_GET:
+            /*read the given saul device*/
+            dim = saul_reg_read(saul_device, &data);
+            if(dim < 0)
+            {
+                return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
+            }
+            gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+            coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+            size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+            
+            /* write the response buffer with the request count value */
+            resp_len += phydat_to_json(&data, dim, (char *)pdu->payload);
+            return resp_len;
+        case COAP_PUT:
+            /* convert the payload to an integer and update the internal
+                value */
+            if (pdu->payload_len <= 5) {
+                char payload[6] = { 0 };
+                memcpy(payload, (char *)pdu->payload, pdu->payload_len);
+                
+                char *endptr;
+                int32_t value = (uint32_t)strtoul(payload, &endptr, 10);
+                phydat_fit(&data, &value, 1);
+
+                if(saul_reg_write(saul_device, &data) < 0)
+                {
+                    return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
+                }
+                return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
+            }
+            else {
+                return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
+            }
+    }
+    return 0;
+}
+
 // we will use a custom event handler for dumping cord_ep events
 static void _on_ep_event(cord_ep_standalone_event_t event)
 {
