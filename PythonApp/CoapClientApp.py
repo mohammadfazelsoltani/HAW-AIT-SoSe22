@@ -58,7 +58,7 @@ async def main():
     
     await asyncio.sleep(5)
     
-    while TRUE:
+    while(1):
         resources = await get_resource_lookup(protocol)
         accel_url = [url for url in resources if "SENSE_ACCEL" in url]
         print('Accelerometer URL: %s\n'%(accel_url))
