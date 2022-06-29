@@ -35,42 +35,18 @@ async def main():
     # payload = b"The quick brown fox jumps over the lazy dog.\n" * 30
     # request = Message(code=PUT, payload=payload, uri="coap://localhost/other/block")
     # GET Example
-    request = Message(code=GET, uri='coap://[::1]/.well-known/core')
+    # request = Message(code=GET, uri='coap://[::1]/.well-known/core')
+    request = get_led_blue()
     try:
         response = await protocol.request(request).response
     except Exception as e:
         print('Failed to fetch resource:')
         print(e)
     else:
-        # print('Result: %s\n%r'%(response.code, response.payload))
-        resources = response.payload.decode("UTF-8").split(",")
-        for resource in resources:
-            print(resource)
-    ###
-    await asyncio.sleep(2)
-    protocol2 = await Context.create_client_context()
-    request2 = set_led_blue("1")
-    try:
-        response2 = await protocol2.request(request2).response
-    except Exception as e:
-        print('Failed to fetch resource:')
-        print(e)
-    else:
-        print('Result: %s\n%r'%(response2.code, response2.payload))
-        #resources2 = response2.payload.decode("UTF-8").split(",")
-        #for resource2 in resources2:
-        #    print(resource2)
-    ###
-    await asyncio.sleep(2)
-    protocol3 = await Context.create_client_context()
-    request3 = set_led_blue("0")
-    try:
-        response3 = await protocol3.request(request3).response
-    except Exception as e:
-        print('Failed to fetch resource:')
-        print(e)
-    else:
-        print('Result: %s\n%r'%(response3.code, response3.payload))
+        print('Result: %s\n%r'%(response.code, response.payload))
+        #resources = response.payload.decode("UTF-8").split(",")
+        #for resource in resources:
+        #    print(resource)
 
 # main-Function
 if __name__ == "__main__":
