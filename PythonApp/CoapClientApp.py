@@ -65,16 +65,14 @@ async def main():
         led_urls = [url for url in resources if "LED" in url]
         print('LED URL: %s\n'%(led_urls))
     
-    await asyncio.sleep(5)
-
 # main-Function
 if __name__ == "__main__":
-    asyncio.run(main())
-    # loop = asyncio.new_event_loop()
-    # asyncio.set_event_loop(loop)
+    # asyncio.run(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-    # task = loop.create_task(main())
-    # try:
-    #     loop.run_forever()
-    # except KeyboardInterrupt:
-    #     print()
+    task = loop.create_task(main())
+    try:
+         loop.run_forever()
+    except KeyboardInterrupt:
+         print()
