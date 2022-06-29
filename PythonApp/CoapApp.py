@@ -3,7 +3,6 @@
 # Imports
 import asyncio
 import logging
-from time import sleep
 
 from aiocoap import *
 # Functions
@@ -38,9 +37,6 @@ async def main():
         resources = response.payload.decode("UTF-8").split(",")
         for resource in resources:
             print(resource)
-        set_led_blue(1)
-        sleep(5)
-        set_led_blue(0)
 
 # main-Function
 if __name__ == "__main__":
