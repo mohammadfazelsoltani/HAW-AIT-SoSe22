@@ -56,7 +56,7 @@ async def main():
         print('Failed to fetch resource:')
         print(e)
     else:
-        print('Result: %s\n%r'%(response.code, response.payload))
+        print('Result: %s\n%r'%(response2.code, response2.payload))
         #resources2 = response2.payload.decode("UTF-8").split(",")
         #for resource2 in resources2:
         #    print(resource2)
@@ -65,12 +65,12 @@ async def main():
     protocol3 = await Context.create_client_context()
     request3 = set_led_blue(0)
     try:
-        response2 = await protocol3.request(request3).response
+        response3 = await protocol3.request(request3).response
     except Exception as e:
         print('Failed to fetch resource:')
         print(e)
     else:
-        print('Result: %s\n%r'%(response.code, response.payload))
+        print('Result: %s\n%r'%(response3.code, response3.payload))
 
 # main-Function
 if __name__ == "__main__":
