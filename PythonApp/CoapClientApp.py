@@ -49,7 +49,7 @@ async def main():
     ###
     await asyncio.sleep(2)
     protocol2 = await Context.create_client_context()
-    request2 = set_led_blue(1)
+    request2 = set_led_blue("1")
     try:
         response2 = await protocol2.request(request2).response
     except Exception as e:
@@ -63,7 +63,7 @@ async def main():
     ###
     await asyncio.sleep(2)
     protocol3 = await Context.create_client_context()
-    request3 = set_led_blue(0)
+    request3 = set_led_blue("0")
     try:
         response3 = await protocol3.request(request3).response
     except Exception as e:
