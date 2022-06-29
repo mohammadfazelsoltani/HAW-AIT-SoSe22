@@ -26,8 +26,9 @@ async def get_resource_lookup(protocol):
         resources = resources.replace("<", "").replace(">", "").split(",")
         return resources
 
-async def get_current_accelerometer_values(protocol, accel_uri):
-    request = Message(code=GET, uri=accel_uri)
+async def get_current_accelerometer_values(protocol, accel_url):
+    # request = Message(code=GET, uri=accel_url)
+    request = Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/mma8x5x/SENSE_ACCEL')
     response = await protocol.request(request).response
     # b'{"d":[0.010,0.027,1.050],"u":"g"}\x00'
     binary_output = response.payload.decode("UTF-8").replace('\x00', '')
@@ -49,20 +50,30 @@ async def turn_all_leds(protocol, led_urls, value):
 def get_led_blue():
     return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(blue)/ACT_SWITCH')
 
-def set_led_blue(payload):
-    return Message(code=PUT, payload=payload, uri="coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(blue)/ACT_SWITCH")
+async def set_led_blue(protocol,url,value):
+    # print('Given URL: %s\n'%(url))
+    # blue_led = url.replace("(", "%28").replace(")", "%29")
+    # print('Set: %s\n'%(blue_led))
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(blue)/ACT_SWITCH')
+    await protocol.request(request).response
 
 def get_led_green():
     return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(green)/ACT_SWITCH')
 
-def set_led_green(payload):
-    return Message(code=PUT, payload=payload, uri="coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(green)/ACT_SWITCH")
+async def set_led_green(protocol,url,value):
+    # green_led = url.replace("(", "%28").replace(")", "%29")
+    # print('Set: %s\n'%(green_led))
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(green)/ACT_SWITCH')
+    await protocol.request(request).response
 
 def get_led_red():
     return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(red)/ACT_SWITCH')
 
-def set_led_red():
-    return Message(code=PUT, payload=payload, uri="coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(red)/ACT_SWITCH")
+async def set_led_red(protocol,url,value):
+    # red_led = url.replace("(", "%28").replace(")", "%29")
+    # print('Set: %s\n'%(red_led))
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(red)/ACT_SWITCH')
+    await protocol.request(request).response
 
 async def main():
     protocol = await Context.create_client_context()
@@ -84,10 +95,45 @@ async def main():
     led_urls = [url for url in resources if "LED" in url]
     print('LED URL: %s\n'%(led_urls))
     
-    # accel_values = await get_current_accelerometer_values(protocol,accel_url)
-    await turn_all_leds(protocol,led_urls, 1)
-    await asyncio.sleep(2)
-    await turn_all_leds(protocol,led_urls, 0)
+    led_blue = [url for url in led_urls if "blue" in url]
+    print('LED BLUE: %s\n'%(led_blue))
+    
+    led_green = [url for url in led_urls if "green" in url]
+    print('LED GREEN: %s\n'%(led_green))
+    
+    led_red = [url for url in led_urls if "red" in url]
+    print('LED RED: %s\n'%(led_red))
+    
+    # while(1):
+    accel_values = await get_current_accelerometer_values(protocol,accel_url)
+    if accel_values['d'][2] <= 1.0 and accel_values['d'][2] >= 0.9:
+        print('Turn all LED off!')
+        await turn_all_leds(protocol,led_urls, 0)
+    elif accel_values['d'][2] <= -1.0 and accel_values['d'][2] >= -0.9:
+        print('Turn all LED on!')
+        await turn_all_leds(protocol,led_urls, 1)
+    elif accel_values['d'][1] >= -0.9:
+        print('Turn green LED on!')
+        await set_led_blue(protocol,led_blue,0)
+        await asyncio.sleep(1)
+        await set_led_green(protocol,led_green,1)
+        await asyncio.sleep(1)
+        await set_led_red(protocol,led_red,0)
+        await asyncio.sleep(1)
+    elif accel_values['d'][1] <= -0.9:
+        print('Turn red LED on!')
+        await set_led_blue(protocol,led_blue,0)
+        await asyncio.sleep(1)
+        await set_led_green(protocol,led_green,0)
+        await asyncio.sleep(1)
+        await set_led_red(protocol,led_red,1)
+        await asyncio.sleep(1)
+    else:
+        pass
+        
+    # await turn_all_leds(protocol,led_urls, 1)
+    # await asyncio.sleep(2)
+    # await turn_all_leds(protocol,led_urls, 0)
     # while(1):
     #     pass
    
