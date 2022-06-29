@@ -3,6 +3,7 @@
 # Imports
 import asyncio
 import logging
+from time import sleep
 
 from aiocoap import *
 # Functions
@@ -15,6 +16,12 @@ def getWellKnownCore():
 
 def getResourceLookupReq():
     return Message(code=GET, uri='coap://[::1]/resource-lookup/')
+
+def get_led_blue():
+    return Message(code=GET, uri='coap://[::1]/saul/LED(blue)/ACT_SWITCH')
+
+def set_led_blue(payload):
+    return Message(code=PUT, payload=payload, uri="coap://[::1]/saul/LED(blue)/ACT_SWITCH")
 
 async def main():
     protocol = await Context.create_client_context()
@@ -31,6 +38,9 @@ async def main():
         resources = response.payload.decode("UTF-8").split(",")
         for resource in resources:
             print(resource)
+        set_led_blue(1)
+        sleep(5)
+        set_led_blue(0)
 
 # main-Function
 if __name__ == "__main__":
