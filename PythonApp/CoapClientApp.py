@@ -58,12 +58,12 @@ async def main():
     
     await asyncio.sleep(5)
     
-    while(1):
-        resources = await get_resource_lookup(protocol)
-        accel_url = [url for url in resources if "SENSE_ACCEL" in url]
-        print('Accelerometer URL: %s\n'%(accel_url))
-        led_urls = [url for url in resources if "LED" in url]
-        print('LED URL: %s\n'%(led_urls))
+    #while(1):
+    resources = await get_resource_lookup(protocol)
+    accel_url = [url for url in resources if "SENSE_ACCEL" in url]
+    print('Accelerometer URL: %s\n'%(accel_url))
+    led_urls = [url for url in resources if "LED" in url]
+    print('LED URL: %s\n'%(led_urls))
     
 # main-Function
 if __name__ == "__main__":
