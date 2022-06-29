@@ -7,25 +7,25 @@ from aiocoap import *
 
 logging.basicConfig(level=logging.INFO)
 
-async def get_current_accelerometer_status():
+def get_current_accelerometer_status():
     return Message(code=GET, uri='coap://[::1]/saul/mma8x5x/SENSE_ACCEL')
 
-async def get_led_blue():
+def get_led_blue():
     return Message(code=GET, uri='coap://[::1]/saul/LED(blue)/ACT_SWITCH')
 
-async def set_led_blue(payload):
+def set_led_blue(payload):
     return Message(code=PUT, payload=payload, uri="coap://[::1]/saul/LED(blue)/ACT_SWITCH")
 
-async def get_led_green():
+def get_led_green():
     return Message(code=GET, uri='coap://[::1]/saul/LED(green)/ACT_SWITCH')
 
-async def set_led_green(payload):
+def set_led_green(payload):
     return Message(code=PUT, payload=payload, uri="coap://[::1]/saul/LED(green)/ACT_SWITCH")
 
-async def get_led_red():
+def get_led_red():
     return Message(code=GET, uri='coap://[::1]/saul/LED(red)/ACT_SWITCH')
 
-async def set_led_red():
+def set_led_red():
     return Message(code=PUT, payload=payload, uri="coap://[::1]/saul/LED(red)/ACT_SWITCH")
 
 async def main():
