@@ -23,7 +23,7 @@ async def main():
         print('Failed to fetch resource:')
         print(e)
     else:
-        print('Result: %s\n%r'%(response.code, response.payload))
+        # print('Result: %s\n%r'%(response.code, response.payload))
         resources = response.payload.decode("UTF-8").split(",")
         for resource in resources:
             print(resource)
