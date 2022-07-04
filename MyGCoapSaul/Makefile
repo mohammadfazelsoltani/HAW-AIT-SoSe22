@@ -1,10 +1,13 @@
 # Default Makefile, for host native GNRC-based networking
 
+CFLAGS+=-DCONFIG_IEEE802154_DEFAULT_CHANNEL=23
+CFLAGS+=-DCONFIG_GNRC_IPV6_NIB_SLAAC=1
+
 # name of your application
 APPLICATION = mygcoapsaul_example
 
 # If no BOARD is found in the environment, use this default:
-BOARD ?= native
+BOARD ?= pba-d-01-kw2x
 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../RIOT-HAW-AIT-SoSe22/
