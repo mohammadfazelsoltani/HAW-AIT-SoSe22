@@ -20,9 +20,6 @@ async def get_endpoints(protocol):
         print(e)
         return []
     else:
-        # endpoints = response.payload.decode("UTF-8")
-        # endpoints = endpoints.replace("<", "").replace(">", "").split(",")
-        # print('Endpoints: %s'%(endpoints))
         endpoints = str(response.payload)
         endpoints = re.findall(r"[^[]*\[([^]]*)\]", endpoints)
         return endpoints
@@ -65,25 +62,6 @@ async def get_current_accelerometer_values(protocol, host, accel_url):
     # b'{"d":[0.010,0.027,1.050],"u":"g"}'
     return json.loads(binary_output)
 
-'''
-async def turn_all_leds(protocol, host, led_urls, value):
-    #
-    # turns all leds from led_urls to the given value
-    # value 1 is on , value 0 is off
-    # 
-    print('LED Endpoints: %s\n'%(led_urls))
-    led_blue = [url for url in led_urls if "blue" in url]
-    print('LED Blue Endpoint: %s\n'%(led_blue))
-    led_green = [url for url in led_urls if "green" in url]
-    print('LED Green Endpoint: %s\n'%(led_green))
-    led_red = [url for url in led_urls if "red" in url]
-    print('LED Red Endpoint: %s\n'%(led_red))
-    
-    await set_led_blue(protocol, host, led_blue, value)
-    await set_led_green(protocol, host, led_green, value)
-    await set_led_red(protocol, host, led_red, value)
-'''    
-
 async def set_led_blue(protocol,value,host,blue_led_url):
     request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[' + host + ']'+ blue_led_url)
     await protocol.request(request).response
@@ -100,7 +78,7 @@ async def main():
     protocol = await Context.create_client_context()
     await asyncio.sleep(2)
     hosts = await get_endpoints(protocol)
-    # print("Hosts: %s\n"%(hosts))
+    print("Hosts: %s\n"%(hosts))
     await asyncio.sleep(1)
     resources = await get_resources(protocol)
     # print("Resources: %s\n"%(resources))
@@ -165,30 +143,34 @@ async def main():
             # print(accel_values)
             await asyncio.sleep(2)
             x_axis = accel_values['d'][0]
-            # print ('X-Axis:%d\n'%(x_axis))
+            # print ('X-Axis:%f\n'%(x_axis))
             y_axis = accel_values['d'][1]
-            # print ('Y-Axis:%d\n'%(y_axis))
+            print ('Y-Axis:%f\n'%(y_axis))
             z_axis = accel_values['d'][2]
-            # print ('Z-Axis:%d\n'%(z_axis))
-            if abs(z_axis) <= 1.1 and abs(z_axis) >= 0.9:
+            print ('Z-Axis:%f\n'%(z_axis))
+            if -1.1 <= z_axis and z_axis <= -0.95:
                 # Back
                 print('Turn all LED on!')
                 # await turn_all_leds(protocol,led_urls, 1)
                 await set_led_blue(protocol, 1, host, led_blue[0])
                 await set_led_green(protocol, 1, host, led_green[0])
                 await set_led_red(protocol, 1, host, led_red[0])
-            elif abs(y_axis) < 1.1 and abs(y_axis) > 0.91 and abs(z_axis) >= 0.0:
+            elif -1.1 <= y_axis and y_axis <= -0.95 and abs(z_axis) >= 0.0:
                 # Potrait Up
                 print('Turn green LED on!')
                 await set_led_blue(protocol, 0, host, led_blue[0])
                 await set_led_green(protocol, 1, host, led_green[0])
                 await set_led_red(protocol, 0, host, led_red[0])
-            elif abs(y_axis) <= 0.9 and abs(y_axis) > 0.0 and z_axis >= 0.0:
+            elif y_axis > -0.95 and abs(z_axis) >= 0.0:
                 print('Turn red LED on!')
                 await set_led_blue(protocol, 0, host, led_blue[0])
                 await set_led_green(protocol, 0, host, led_green[0])
                 await set_led_red(protocol, 1, host, led_red[0])
             else:
+                print('Turn all LED off!')
+                await set_led_blue(protocol, 0, host, led_blue[0])
+                await set_led_green(protocol, 0, host, led_green[0])
+                await set_led_red(protocol, 0, host, led_red[0])
                 await asyncio.sleep(1)
    
 # main-Function
