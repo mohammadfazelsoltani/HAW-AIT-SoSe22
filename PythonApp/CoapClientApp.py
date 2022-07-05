@@ -76,7 +76,7 @@ async def set_led_red(protocol,value,host,red_led_url):
 
 async def main():
     protocol = await Context.create_client_context()
-    await asyncio.sleep(2)
+    await asyncio.sleep(1)
     hosts = await get_endpoints(protocol)
     print("Hosts: %s\n"%(hosts))
     await asyncio.sleep(1)
@@ -85,19 +85,14 @@ async def main():
     await asyncio.sleep(1)
     accel_url = [url for url in resources if "SENSE_ACCEL" in url]
     # print('Accelerometer Endpoint: %s\n'%(accel_url))
-    await asyncio.sleep(1)
     buttons2_url = [url for url in resources if "(SW0)" in url]
     # print('Button S2 Endpoint: %s\n'%(buttons2_url))
-    await asyncio.sleep(1)
     led_urls = [url for url in resources if "LED" in url]
     # print('LED URL: %s\n'%(led_urls))
-    await asyncio.sleep(1)
     led_blue = [url for url in led_urls if "blue" in url]
     # print('LED BLUE: %s\n'%(led_blue))
-    await asyncio.sleep(1)
     led_green = [url for url in led_urls if "green" in url]
     # print('LED GREEN: %s\n'%(led_green))
-    await asyncio.sleep(1)
     led_red = [url for url in led_urls if "red" in url]
     # print('LED RED: %s\n'%(led_red))
 
@@ -110,22 +105,23 @@ async def main():
             if await get_buttons2_status(protocol,host,buttons2_url[0]):
                 sensor = host
                 print("Sensor wurde ausgewählt\n")
-                
                 await set_led_green(protocol, 0, host, led_green[0])
+                await asyncio.sleep(2)
                 await set_led_red(protocol, 0, host, led_red[0])
-                
+                await asyncio.sleep(2)
                 await set_led_blue(protocol,0,host,led_blue[0])
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
             else:
                 
                 await set_led_green(protocol, 0, host, led_green[0])
+                await asyncio.sleep(2)
                 await set_led_red(protocol, 0, host, led_red[0])
-                
+                await asyncio.sleep(2)
                 await set_led_blue(protocol,1,host,led_blue[0])
-                # await turn_all_leds(protocol, host, led_urls, 1)
+                await asyncio.sleep(2)
                 print("Sensor wurde nicht ausgewählt\n")
                 print("Bitte drücken Sie den S2 Button, um den Sensor auszuwaehlen!\n")
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
     print('Sensor: %s'%(sensor))
     
     # Alle anderen Hosts sind dann Aktoren (LEDs)
@@ -153,25 +149,34 @@ async def main():
                 print('Turn all LED on!')
                 # await turn_all_leds(protocol,led_urls, 1)
                 await set_led_blue(protocol, 1, host, led_blue[0])
+                await asyncio.sleep(2)
                 await set_led_green(protocol, 1, host, led_green[0])
+                await asyncio.sleep(2)
                 await set_led_red(protocol, 1, host, led_red[0])
+                await asyncio.sleep(2)
             elif -1.1 <= y_axis and y_axis <= -0.95 and abs(z_axis) >= 0.0:
                 # Potrait Up
                 print('Turn green LED on!')
                 await set_led_blue(protocol, 0, host, led_blue[0])
+                await asyncio.sleep(2)
                 await set_led_green(protocol, 1, host, led_green[0])
+                await asyncio.sleep(2)
                 await set_led_red(protocol, 0, host, led_red[0])
             elif y_axis > -0.95 and abs(z_axis) >= 0.0:
                 print('Turn red LED on!')
                 await set_led_blue(protocol, 0, host, led_blue[0])
+                await asyncio.sleep(2)
                 await set_led_green(protocol, 0, host, led_green[0])
+                await asyncio.sleep(2)
                 await set_led_red(protocol, 1, host, led_red[0])
+                await asyncio.sleep(2)
             else:
+                '''
                 print('Turn all LED off!')
                 await set_led_blue(protocol, 0, host, led_blue[0])
                 await set_led_green(protocol, 0, host, led_green[0])
                 await set_led_red(protocol, 0, host, led_red[0])
-                await asyncio.sleep(1)
+                '''
    
 # main-Function
 if __name__ == "__main__":
