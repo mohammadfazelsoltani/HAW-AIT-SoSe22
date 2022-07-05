@@ -3,6 +3,7 @@
 import logging
 import asyncio
 import json
+import re
 
 from requests import request
 
@@ -10,11 +11,8 @@ from aiocoap import *
 
 logging.basicConfig(level=logging.INFO)
 
-def get_well_known_core():
-    return Message(code=GET, uri='coap://[::1]/.well-known/core')
-
-async def get_resource_lookup(protocol):
-    request = Message(code=GET, uri='coap://[::1]/resource-lookup/')
+async def get_endpoints(protocol):
+    request = Message(code=GET, uri='coap://localhost/endpoint-lookup/')
     try:
         response = await protocol.request(request).response
     except Exception as e:
@@ -22,129 +20,176 @@ async def get_resource_lookup(protocol):
         print(e)
         return []
     else:
+        # endpoints = response.payload.decode("UTF-8")
+        # endpoints = endpoints.replace("<", "").replace(">", "").split(",")
+        # print('Endpoints: %s'%(endpoints))
+        endpoints = str(response.payload)
+        endpoints = re.findall(r"[^[]*\[([^]]*)\]", endpoints)
+        return endpoints
+
+async def get_resources(protocol):
+    request = Message(code=GET, uri='coap://localhost/resource-lookup/')
+    try:
+        response = await protocol.request(request).response
+    except Exception as e:
+        print('Failed to fetch resource:')
+        print(e)
+        return []
+    else:
+        resource_list = []
         resources = response.payload.decode("UTF-8")
         resources = resources.replace("<", "").replace(">", "").split(",")
-        return resources
+        for resource in resources:
+            resource_list.append(resource.split(']')[1])
+        
+        return list(dict.fromkeys(resource_list))
 
-async def get_current_accelerometer_values(protocol, accel_url):
-    # request = Message(code=GET, uri=accel_url)
-    request = Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/mma8x5x/SENSE_ACCEL')
+async def get_buttons2_status(protocol, host, buttons2_url):
+    request = Message(code=GET, uri='coap://[' + host + ']'+ buttons2_url)
+    try:
+        response = await protocol.request(request).response
+    except Exception as e:
+        print('Failed to fetch resource:')
+        print(e)
+        return []
+    else:
+        buttons2_state = json.loads(response.payload.decode("utf-8").replace("\x00", ""))
+        return buttons2_state["d"]
+
+async def get_current_accelerometer_values(protocol, host, accel_url):
+    # print("URL of Accel: %s"%(accel_url))
+    request = Message(code=GET, uri='coap://[' + host + ']'+ accel_url)
     response = await protocol.request(request).response
     # b'{"d":[0.010,0.027,1.050],"u":"g"}\x00'
     binary_output = response.payload.decode("UTF-8").replace('\x00', '')
     # b'{"d":[0.010,0.027,1.050],"u":"g"}'
     return json.loads(binary_output)
 
-async def turn_all_leds(protocol, led_urls, value):
+'''
+async def turn_all_leds(protocol, host, led_urls, value):
     #
     # turns all leds from led_urls to the given value
     # value 1 is on , value 0 is off
     # 
-    for led_url in led_urls:
-        # print("Put LED: ", led_urls.index(led_url), " to ", value)
-        led_url = led_url.replace("(", "%28").replace(")", "%29")
-        request = Message(code=Code.PUT, payload=str.encode(str(value)), uri=led_url)
-        # await asyncio.sleep(2)
-        await protocol.request(request).response
+    print('LED Endpoints: %s\n'%(led_urls))
+    led_blue = [url for url in led_urls if "blue" in url]
+    print('LED Blue Endpoint: %s\n'%(led_blue))
+    led_green = [url for url in led_urls if "green" in url]
+    print('LED Green Endpoint: %s\n'%(led_green))
+    led_red = [url for url in led_urls if "red" in url]
+    print('LED Red Endpoint: %s\n'%(led_red))
+    
+    await set_led_blue(protocol, host, led_blue, value)
+    await set_led_green(protocol, host, led_green, value)
+    await set_led_red(protocol, host, led_red, value)
+'''    
 
-def get_led_blue():
-    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(blue)/ACT_SWITCH')
-
-async def set_led_blue(protocol,url,value):
-    # print('Given URL: %s\n'%(url))
-    # blue_led = url.replace("(", "%28").replace(")", "%29")
-    # print('Set: %s\n'%(blue_led))
-    # request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(blue)/ACT_SWITCH')
-    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3056:b773:a2de]/saul/LED(blue)/ACT_SWITCH')
+async def set_led_blue(protocol,value,host,blue_led_url):
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[' + host + ']'+ blue_led_url)
     await protocol.request(request).response
 
-def get_led_green():
-    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(green)/ACT_SWITCH')
-
-async def set_led_green(protocol,url,value):
-    # green_led = url.replace("(", "%28").replace(")", "%29")
-    # print('Set: %s\n'%(green_led))
-    # request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(green)/ACT_SWITCH')
-    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3056:b773:a2de]/saul/LED(green)/ACT_SWITCH')
+async def set_led_green(protocol,value,host,green_led_url):
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[' + host + ']'+ green_led_url)
     await protocol.request(request).response
 
-def get_led_red():
-    return Message(code=GET, uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(red)/ACT_SWITCH')
-
-async def set_led_red(protocol,url,value):
-    # red_led = url.replace("(", "%28").replace(")", "%29")
-    # print('Set: %s\n'%(red_led))
-    # request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3060:6eff:7da6]/saul/LED(red)/ACT_SWITCH')
-    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[2001:67c:254:b0b2:affe:3056:b773:a2de]/saul/LED(red)/ACT_SWITCH')
+async def set_led_red(protocol,value,host,red_led_url):
+    request = Message(code=PUT, payload=str.encode(str(value)), uri='coap://[' + host + ']'+ red_led_url)
     await protocol.request(request).response
 
 async def main():
     protocol = await Context.create_client_context()
-    # PUT Example
-    #await asyncio.sleep(2)
-    # payload = b"The quick brown fox jumps over the lazy dog.\n" * 30
-    # request = Message(code=PUT, payload=payload, uri="coap://localhost/other/block")
-    # GET Example
-    # request = Message(code=GET, uri='coap://[::1]/.well-known/core')
-    # request = get_current_accelerometer_status()
-    
     await asyncio.sleep(2)
-    
-    resources = await get_resource_lookup(protocol)
-    
+    hosts = await get_endpoints(protocol)
+    # print("Hosts: %s\n"%(hosts))
+    await asyncio.sleep(1)
+    resources = await get_resources(protocol)
+    # print("Resources: %s\n"%(resources))
+    await asyncio.sleep(1)
     accel_url = [url for url in resources if "SENSE_ACCEL" in url]
-    print('Accelerometer URL: %s\n'%(accel_url))
-    
+    # print('Accelerometer Endpoint: %s\n'%(accel_url))
+    await asyncio.sleep(1)
+    buttons2_url = [url for url in resources if "(SW0)" in url]
+    # print('Button S2 Endpoint: %s\n'%(buttons2_url))
+    await asyncio.sleep(1)
     led_urls = [url for url in resources if "LED" in url]
-    print('LED URL: %s\n'%(led_urls))
-    
+    # print('LED URL: %s\n'%(led_urls))
+    await asyncio.sleep(1)
     led_blue = [url for url in led_urls if "blue" in url]
     # print('LED BLUE: %s\n'%(led_blue))
-    
+    await asyncio.sleep(1)
     led_green = [url for url in led_urls if "green" in url]
     # print('LED GREEN: %s\n'%(led_green))
-    
+    await asyncio.sleep(1)
     led_red = [url for url in led_urls if "red" in url]
     # print('LED RED: %s\n'%(led_red))
+
+    sensor = -1
     
-    while(1):
-    # while loop to get periodically current values of accelerometer
-        accel_values = await get_current_accelerometer_values(protocol,accel_url)
-        # await asyncio.sleep(1)
-        # print(accel_values)
-        x_axis = accel_values['d'][0]
-        print ('X-Axis:%d\n'%(x_axis))
-        y_axis = accel_values['d'][1]
-        print ('Y-Axis:%d\n'%(y_axis))
-        z_axis = accel_values['d'][2]
-        print ('Y-Axis:%d\n'%(z_axis))
-        if abs(z_axis) <= 1.1 and abs(z_axis) >= 0.9:
-            # Back
-            print('Turn all LED on!')
-            await turn_all_leds(protocol,led_urls, 1)
-        #elif accel_values['d'][1] <= 0.0 and accel_values['d'][2] <= -1.1 and accel_values['d'][2] < 0.0:
-            # Front
-        #    print('Turn all LED off!')
-        #    await turn_all_leds(protocol,led_urls, 0)
-        elif abs(y_axis) < 1.1 and abs(y_axis) > 0.91 and abs(z_axis) >= 0.0:
-            # Potrait Up
-            print('Turn green LED on!')
-            await set_led_blue(protocol,led_blue,0)
-            await asyncio.sleep(1)
-            await set_led_red(protocol,led_red,0)
-            await asyncio.sleep(1)
-            await set_led_green(protocol,led_green,1)
-        elif abs(y_axis) <= 0.9 and abs(y_axis) > 0.0 and z_axis >= 0.0:
-            print('Turn red LED on!')
-            await set_led_blue(protocol,led_blue,0)
-            await asyncio.sleep(1)
-            await set_led_green(protocol,led_green,0)
-            await asyncio.sleep(1)
-            await set_led_red(protocol,led_red,1)
-            await asyncio.sleep(1)
-        else:
-            print('Do nothing.')
-            await asyncio.sleep(1)
+    # Kontrolllogik, um zu unterscheide, wer der Sensor (Accelerometer Messung) ist
+    
+    while(sensor == -1):
+        for host in hosts:
+            if await get_buttons2_status(protocol,host,buttons2_url[0]):
+                sensor = host
+                print("Sensor wurde ausgewählt\n")
+                
+                await set_led_green(protocol, 0, host, led_green[0])
+                await set_led_red(protocol, 0, host, led_red[0])
+                
+                await set_led_blue(protocol,0,host,led_blue[0])
+                await asyncio.sleep(1)
+            else:
+                
+                await set_led_green(protocol, 0, host, led_green[0])
+                await set_led_red(protocol, 0, host, led_red[0])
+                
+                await set_led_blue(protocol,1,host,led_blue[0])
+                # await turn_all_leds(protocol, host, led_urls, 1)
+                print("Sensor wurde nicht ausgewählt\n")
+                print("Bitte drücken Sie den S2 Button, um den Sensor auszuwaehlen!\n")
+                await asyncio.sleep(1)
+    print('Sensor: %s'%(sensor))
+    
+    # Alle anderen Hosts sind dann Aktoren (LEDs)
+    
+    for host in hosts:
+        if sensor != host:
+            await set_led_blue(protocol,0,host,led_blue[0])
+    
+    hosts.remove(sensor) # Remove Sensor from Hosts
+    # Kontrollogik vom Sensor
+    
+    while(sensor != -1):
+        for host in hosts:
+            accel_values = await get_current_accelerometer_values(protocol,sensor,accel_url[0])
+            # print(accel_values)
+            await asyncio.sleep(2)
+            x_axis = accel_values['d'][0]
+            # print ('X-Axis:%d\n'%(x_axis))
+            y_axis = accel_values['d'][1]
+            # print ('Y-Axis:%d\n'%(y_axis))
+            z_axis = accel_values['d'][2]
+            # print ('Z-Axis:%d\n'%(z_axis))
+            if abs(z_axis) <= 1.1 and abs(z_axis) >= 0.9:
+                # Back
+                print('Turn all LED on!')
+                # await turn_all_leds(protocol,led_urls, 1)
+                await set_led_blue(protocol, 1, host, led_blue[0])
+                await set_led_green(protocol, 1, host, led_green[0])
+                await set_led_red(protocol, 1, host, led_red[0])
+            elif abs(y_axis) < 1.1 and abs(y_axis) > 0.91 and abs(z_axis) >= 0.0:
+                # Potrait Up
+                print('Turn green LED on!')
+                await set_led_blue(protocol, 0, host, led_blue[0])
+                await set_led_green(protocol, 1, host, led_green[0])
+                await set_led_red(protocol, 0, host, led_red[0])
+            elif abs(y_axis) <= 0.9 and abs(y_axis) > 0.0 and z_axis >= 0.0:
+                print('Turn red LED on!')
+                await set_led_blue(protocol, 0, host, led_blue[0])
+                await set_led_green(protocol, 0, host, led_green[0])
+                await set_led_red(protocol, 1, host, led_red[0])
+            else:
+                await asyncio.sleep(1)
    
 # main-Function
 if __name__ == "__main__":
